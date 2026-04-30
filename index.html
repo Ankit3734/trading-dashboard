@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KUAD GHOST | SMART TERMINAL</title>
+    <style>
+        :root { --neon: #00ff88; --bg: #050505; --card: #0d0d0d; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; overflow: hidden; }
+        .menu-btn { position: fixed; top: 20px; left: 20px; cursor: pointer; z-index: 1000; background: #111; padding: 10px; border-radius: 5px; border: 1px solid var(--neon); }
+        .dot { width: 20px; height: 2px; background: var(--neon); margin: 4px 0; }
+        .sidebar { position: fixed; top: 0; left: -260px; width: 250px; height: 100%; background: #080808; border-right: 1px solid #222; transition: 0.3s; z-index: 999; padding-top: 80px; }
+        .sidebar.active { left: 0; }
+        .nav-item { padding: 15px 25px; cursor: pointer; color: #555; border-bottom: 1px solid #111; }
+        .nav-item:hover, .nav-item.active { color: var(--neon); background: #111; }
+        .main-content { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
+        .section { display: none; width: 100%; max-width: 400px; background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid #1a1a1a; }
+        .section.active { display: block; }
+        input, textarea, select { width: 100%; background: #000; border: 1px solid #222; color: var(--neon); padding: 12px; margin-bottom: 10px; border-radius: 6px; box-sizing: border-box; outline: none; }
+        button { width: 100%; background: var(--neon); color: #000; border: none; padding: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 10px; }
+        h2 { color: var(--neon); font-size: 0.9rem; text-align: center; text-transform: uppercase; margin-bottom: 20px; }
+        .stat-line { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="menu-btn" onclick="toggleMenu()"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="sidebar" id="sidebar">
+        <div class="nav-item active" onclick="changeSection('calc-sec')">LOT CALCULATOR</div>
+        <div class="nav-item" onclick="changeSection('journal-sec')">TRADE LOGGER</div>
+        <div class="nav-item" onclick="changeSection('history-sec')">HISTORY</div>
+        <div class="nav-item" onclick="changeSection('analytics-sec')">ANALYTICS</div>
+    </div>
+    <div class="main-content">
+        <div id="calc-sec" class="section active">
+            <h2>Position Sizing</h2>
+            <input type="number" id="bal" placeholder="Account Balance ($)">
+            <input type="number" id="rsk" placeholder="Risk %">
+            <input type="number" id="sl" placeholder="Stop Loss (Pips)">
+            <button onclick="calculate()">GET LOT SIZE</button>
+            <div id="res" style="text-align:center; font-size: 2rem; color: var(--neon); font-weight: 900;">0.00</div>
+        </div>
+        <div id="journal-sec" class="section">
+            <h2>Log Trade</h2>
+            <input type="text" id="pair" placeholder="Pair (XAUUSD/BTC)">
+            <select id="session"><option value="London">London Session</option><option value="New York">New York Session</option><option value="Asia">Asia Session</option></select>
+            <select id="outcome"><option value="WIN">WIN (Profit)</option><option value="LOSS">LOSS (Hit SL)</option></select>
+            <textarea id="note" rows="3" placeholder="Rule followed? SMC Confluence?"></textarea>
+            <button onclick="saveLog()">SAVE TO JOURNEY</button>
+        </div>
+        <div id="history-sec" class="section">
+            <h2>Journey Logs</h2>
+            <div id="history" style="max-height: 250px; overflow-y: auto; font-size: 0.8rem;"></div>
+            <button onclick="clearLogs()" style="background:#222; color:#555; margin-top:10px;">RESET ALL</button>
+        </div>
+        <div id="analytics-sec" class="section">
+            <h2>Trade Insights</h2>
+            <div id="stats-area">
+                <div class="stat-line"><span>Total Trades:</span> <span id="total-t">0</span></div>
+                <div class="stat-line"><span>Best Session:</span> <span id="best-s">-</span></div>
+                <div class="stat-line"><span>Best Day:</span> <span id="best-d">-</span></div>
+            </div>
+        </div>
+    </div>
+<script>
+    function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); }
+    function changeSection(id) {
+        let sections = document.getElementsByClassName('section');
+        for (let s of sections) { s.style.display = 'none'; }
+        document.getElementById(id).style.display = 'block';
+        toggleMenu();
+    }
+    function calculate() {
+        let b = document.getElementById('bal').value; let r = document.getElementById('rsk').value; let s = document.getElementById('sl').value;
+        if(b && r && s) { let lot = (b * (r/100)) / (s * 10); document.getElementById('res').innerText = lot.toFixed(2); }
+    }
+    let trades = JSON.parse(localStorage.getItem('kuad_pro_logs')) || [];
+    function saveLog() {
+        let p = document.getElementById('pair').value; let s = document.getElementById('session').value; let o = document.getElementById('outcome').value; let n = document.getElementById('note').value;
+        let d = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+        if(p && n) { trades.unshift({pair: p, session: s, outcome: o, note: n, day: d}); localStorage.setItem('kuad_pro_logs', JSON.stringify(trades)); updateUI(); alert("Trade Tracked!"); }
+    }
+    function updateUI() {
+        let histHTML = '';
+        trades.forEach(t => { histHTML += `<div style="border-bottom:1px solid #222; padding:8px; color:${t.outcome === 'WIN' ? '#00ff88' : '#ff4444'}"><b>${t.pair}</b> (${t.session}) - ${t.day}<br><small style="color:#666">${t.note}</small></div>`; });
+        document.getElementById('history').innerHTML = histHTML;
+        document.getElementById('total-t').innerText = trades.length;
+        if(trades.length > 0) {
+            let winSessions = trades.filter(t => t.outcome === 'WIN').map(t => t.session);
+            let winDays = trades.filter(t => t.outcome === 'WIN').map(t => t.day);
+            if(winSessions.length > 0) {
+                document.getElementById('best-s').innerText = winSessions.sort((a,b) => winSessions.filter(v => v===a).length - winSessions.filter(v => v===b).length).pop();
+                document.getElementById('best-d').innerText = winDays.sort((a,b) => winDays.filter(v => v===a).length - winDays.filter(v => v===b).length).pop();
+            }
+        }
+    }
+    function clearLogs() { if(confirm("Clear everything?")) { trades = []; localStorage.clear(); updateUI(); } }
+    updateUI();
+</script>
+</body>
+</html>
