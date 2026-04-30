@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | FINAL RESTORE</title>
+    <title>KUAD ELITE | ULTIMATE DASHBOARD</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -20,16 +20,18 @@
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
         
-        /* Progress Bar Restored */
+        /* Progress Bar */
         .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 15px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
         
-        .ana-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; }
-        .ana-table th { text-align: left; color: #64748b; padding: 10px; border-bottom: 1px solid #1e293b; text-transform: uppercase; font-size: 0.65rem; }
-        .ana-table td { padding: 12px 10px; border-bottom: 1px solid #0f172a; }
+        /* Dashboard Tables */
+        .ana-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.75rem; }
+        .ana-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #1e293b; text-transform: uppercase; }
+        .ana-table td { padding: 10px 8px; border-bottom: 1px solid #0f172a; }
+
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -45,7 +47,7 @@
         <div id="dash" class="section active">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h2>Performance Monitor</h2>
+                    <h2>Account Performance</h2>
                     <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold; cursor:pointer;"></select>
                 </div>
                 <div class="grid-4">
@@ -57,12 +59,21 @@
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
                 <div id="p-text" style="text-align:right; font-size:0.7rem; color:var(--accent); font-weight:bold;">0% Completed</div>
             </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                <div class="card">
+                    <h2>Weekly Stats (Day)</h2>
+                    <table class="ana-table"><tbody id="day-ana"></tbody></table>
+                </div>
+                <div class="card">
+                    <h2>Strategy & Session</h2>
+                    <table class="ana-table"><tbody id="strat-ana"></tbody></table>
+                </div>
+            </div>
+            
             <div class="card">
-                <h2>Strategy Analytics</h2>
-                <table class="ana-table">
-                    <thead><tr><th>Category</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
-                    <tbody id="ana-body"></tbody>
-                </table>
+                <h2>Recent Account History</h2>
+                <div id="dash-history"></div>
             </div>
         </div>
 
@@ -81,7 +92,6 @@
                 </div>
                 <button class="primary" onclick="logTrade()">Commit Entry</button>
             </div>
-            <div id="journal-history"></div>
         </div>
 
         <div id="calc" class="section">
@@ -114,7 +124,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'KUAD_ELITE_FOREVER_DATA'; // v24 waali hi key hai
+    const DB_KEY = 'KUAD_ELITE_FOREVER_DATA';
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [] };
 
     function showSec(id) {
@@ -170,35 +180,31 @@
             document.getElementById('d-trg').innerText = `$${a.target}`;
             const diff = a.target - a.current;
             document.getElementById('d-rem').innerText = diff <= 0 ? "DONE 🚀" : `$${diff.toFixed(0)}`;
-            
             const wins = accLogs.filter(l => l.pnl > 0).length;
             document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins / accLogs.length) * 100) + '%' : '0%';
 
-            // Progress Bar Restore Logic
             let progress = ((a.current - a.start) / (a.target - a.start)) * 100;
             progress = Math.max(0, Math.min(100, progress));
             document.getElementById('p-bar').style.width = progress + '%';
             document.getElementById('p-text').innerText = Math.round(progress) + '% Completed';
 
-            const generateAna = () => {
-                let html = '';
-                const categories = ['London', 'New York', 'Asia', 'Scalping', 'Day Trade', 'Swing'];
-                categories.forEach(cat => {
-                    const filtered = accLogs.filter(l => l.session === cat || l.type === cat);
-                    if(filtered.length > 0) {
-                        const cWins = filtered.filter(l => l.pnl > 0).length;
-                        const cPnl = filtered.reduce((sum, l) => sum + l.pnl, 0);
-                        html += `<tr><td>${cat}</td><td>${filtered.length}</td><td>${Math.round((cWins/filtered.length)*100)}%</td><td style="color:${cPnl >=0 ? 'var(--win)' : 'var(--loss)'}">${cPnl >=0 ? '+' : ''}${cPnl.toFixed(0)}$</td></tr>`;
-                    }
-                });
-                return html;
+            // Dashboard Analytics Tables
+            const getAna = (key, list) => {
+                return list.map(val => {
+                    const filtered = accLogs.filter(l => l[key] === val);
+                    if(filtered.length === 0) return `<tr><td>${val}</td><td>-</td><td>-</td></tr>`;
+                    const winR = Math.round((filtered.filter(l => l.pnl > 0).length / filtered.length) * 100);
+                    const netP = filtered.reduce((s, l) => s + l.pnl, 0);
+                    return `<tr><td>${val}</td><td style="color:var(--accent)">${winR}%</td><td style="color:${netP>=0?'var(--win)':'var(--loss)'}">${netP}$</td></tr>`;
+                }).join('');
             };
-            document.getElementById('ana-body').innerHTML = generateAna();
-            
-            // HISTORY FIX: Adding Day column back to display
-            document.getElementById('journal-history').innerHTML = accLogs.map(l => `
+
+            document.getElementById('day-ana').innerHTML = `<tr><th>Day</th><th>Win%</th><th>Net</th></tr>` + getAna('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+            document.getElementById('strat-ana').innerHTML = `<tr><th>Type</th><th>Win%</th><th>Net</th></tr>` + getAna('session', ['London', 'New York', 'Asia']) + getAna('type', ['Scalping', 'Day Trade']);
+
+            document.getElementById('dash-history').innerHTML = accLogs.map(l => `
                 <div class="log-item">
-                    <span><b>${l.day}</b> | ${l.pair} | ${l.session} | ${l.type}</span>
+                    <span><b>${l.day}</b> | ${l.pair} | ${l.session}</span>
                     <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span>
                 </div>`).join('');
         }
