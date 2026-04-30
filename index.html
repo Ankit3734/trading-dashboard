@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | MASTER PRO</title>
+    <title>KUAD ELITE | PRO FILTER</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -19,11 +19,10 @@
         .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
-        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; }
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
         .lot-display { font-size: 4rem; font-weight: 900; text-align: center; margin: 20px 0; color: var(--accent); }
-        .history-list { margin-top: 20px; }
-        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
         .acc-row { display: flex; justify-content: space-between; background: #0d1117; padding: 10px; border-radius: 8px; margin-bottom: 5px; border: 1px solid #1e293b; }
         .badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     </style>
@@ -43,7 +42,7 @@
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <h2>Account Overview</h2>
-                    <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold;"></select>
+                    <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold; cursor:pointer;"></select>
                 </div>
                 <div class="grid-4">
                     <div class="stat-box"><span class="stat-label">Start</span><div id="d-st" class="stat-val">$0</div></div>
@@ -59,7 +58,7 @@
                 <h2>Precision Calculator</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <input type="number" id="c-bal" placeholder="Manual Balance ($)">
-                    <input type="number" id="c-risk" value="1" placeholder="Risk %">
+                    <input type="number" id="c-risk" value="1">
                 </div>
                 <input type="number" id="c-sl" placeholder="Stop Loss (Pips)">
                 <div class="lot-display" id="lot-res">0.00</div>
@@ -69,15 +68,15 @@
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Add Trade</h2>
+                <h2>Log Trade Entry</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
                 </div>
                 <input type="number" id="j-pnl" placeholder="Profit/Loss ($)">
-                <button class="primary" onclick="logTrade('journal')">Log Trade</button>
+                <button class="primary" onclick="logTrade('journal')">Save Trade</button>
             </div>
-            <div class="history-list" id="journal-history"></div>
+            <div id="journal-history"></div>
         </div>
 
         <div id="daily" class="section">
@@ -85,11 +84,11 @@
                 <h2>Daily Tracker</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="d-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <input type="number" id="d-pnl" placeholder="Day Profit/Loss ($)">
+                    <input type="number" id="d-pnl" placeholder="Net Profit/Loss ($)">
                 </div>
-                <button class="primary" onclick="logTrade('daily')">Save Day Result</button>
+                <button class="primary" onclick="logTrade('daily')">Save Day</button>
             </div>
-            <div class="history-list" id="daily-history"></div>
+            <div id="daily-history"></div>
         </div>
 
         <div id="accounts" class="section">
@@ -109,7 +108,7 @@
     </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('kuad_v15')) || { accs: [], active: -1, logs: [], daily: [] };
+    let db = JSON.parse(localStorage.getItem('kuad_v16')) || { accs: [], active: -1, logs: [], daily: [] };
 
     function showSec(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -130,13 +129,6 @@
         save(); location.reload();
     }
 
-    function editAcc(i) {
-        const a = db.accs[i];
-        document.getElementById('a-name').value = a.name; document.getElementById('a-st').value = a.start;
-        document.getElementById('a-cur').value = a.current; document.getElementById('a-trg').value = a.target;
-        document.getElementById('edit-idx').value = i; document.getElementById('form-title').innerText = "Edit " + a.name;
-    }
-
     function runCalc() {
         const bal = parseFloat(document.getElementById('c-bal').value) || (db.active !== -1 ? db.accs[db.active].current : 0);
         const sl = parseFloat(document.getElementById('c-sl').value), risk = parseFloat(document.getElementById('c-risk').value);
@@ -149,23 +141,32 @@
     }
 
     function logTrade(type) {
-        if(db.active === -1) return;
+        if(db.active === -1) return alert("Select an account first!");
         const pnl = parseFloat(document.getElementById(type === 'journal' ? 'j-pnl' : 'd-pnl').value);
         if(isNaN(pnl)) return;
+        
         db.accs[db.active].current += pnl;
         const entry = { acc: db.accs[db.active].name, pnl, date: new Date().toLocaleDateString() };
-        if(type === 'journal') { entry.pair = document.getElementById('j-pair').value; entry.session = document.getElementById('j-session').value; db.logs.unshift(entry); }
-        else { entry.day = document.getElementById('d-day').value; db.daily.unshift(entry); }
+        
+        if(type === 'journal') { 
+            entry.pair = document.getElementById('j-pair').value; 
+            entry.session = document.getElementById('j-session').value; 
+            db.logs.unshift(entry); 
+        } else { 
+            entry.day = document.getElementById('d-day').value; 
+            db.daily.unshift(entry); 
+        }
         save(); updateUI();
     }
 
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
-    function save() { localStorage.setItem('kuad_v15', JSON.stringify(db)); }
+    function save() { localStorage.setItem('kuad_v16', JSON.stringify(db)); }
 
     function updateUI() {
         const sel = document.getElementById('acc-select');
         sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
         sel.selectedIndex = db.active;
+
         if(db.active !== -1) {
             const a = db.accs[db.active];
             document.getElementById('d-st').innerText = `$${a.start}`;
@@ -173,19 +174,38 @@
             document.getElementById('d-trg').innerText = `$${a.target}`;
             const diff = a.target - a.current;
             document.getElementById('d-rem').innerText = diff <= 0 ? "ACHIEVED 🚀" : `$${diff}`;
-            document.getElementById('d-rem').style.color = diff <= 0 ? "var(--win)" : "var(--win)";
+
+            const currentAccName = a.name;
+
+            // SMART FILTER: Only show history for the active account
+            document.getElementById('daily-history').innerHTML = db.daily
+                .filter(l => l.acc === currentAccName)
+                .map(l => `<div class="log-item"><span><b>${l.day}</b> (${l.date})</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
+
+            document.getElementById('journal-history').innerHTML = db.logs
+                .filter(l => l.acc === currentAccName)
+                .map(l => `<div class="log-item"><span><b>${l.pair}</b> | ${l.session}</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
         }
-        // Daily History
-        document.getElementById('daily-history').innerHTML = db.daily.filter(l => l.acc === db.accs[db.active]?.name).map(l => `
-            <div class="log-item"><span><b>${l.day}</b> (${l.date})</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
-        // Journal History
-        document.getElementById('journal-history').innerHTML = db.logs.filter(l => l.acc === db.accs[db.active]?.name).map(l => `
-            <div class="log-item"><span><b>${l.pair}</b> | ${l.session}</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
-        // Accounts List
-        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="acc-row"><span>${a.name}</span><div><button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000; border:none; cursor:pointer; margin-right:5px;">EDIT</button><button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; border:none; cursor:pointer;">DEL</button></div></div>`).join('');
+
+        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `
+            <div class="acc-row">
+                <span>${a.name}</span>
+                <div>
+                    <button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000; border:none; cursor:pointer;">EDIT</button>
+                    <button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; border:none; cursor:pointer; margin-left:5px;">DEL</button>
+                </div>
+            </div>`).join('');
     }
 
-    function delAcc(i) { if(confirm("Delete?")) { db.accs.splice(i,1); db.active = 0; save(); location.reload(); } }
+    function editAcc(i) {
+        const a = db.accs[i];
+        document.getElementById('a-name').value = a.name; document.getElementById('a-st').value = a.start;
+        document.getElementById('a-cur').value = a.current; document.getElementById('a-trg').value = a.target;
+        document.getElementById('edit-idx').value = i; document.getElementById('form-title').innerText = "Edit " + a.name;
+        showSec('accounts');
+    }
+
+    function delAcc(i) { if(confirm("Delete Account?")) { db.accs.splice(i,1); db.active = db.accs.length > 0 ? 0 : -1; save(); location.reload(); } }
     updateUI();
 </script>
 </body>
