@@ -2,38 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | TRADE LOGS PRO</title>
+    <title>KUAD ELITE | PRECISION V28</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 240px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.85rem; }
+        .sidebar { width: 220px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
+        .nav-item { padding: 10px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.8rem; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
-        .main { flex: 1; padding: 25px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; max-width: 1000px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
+        .main { flex: 1; padding: 20px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
+        .section { display: none; max-width: 950px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
-        h2 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 12px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
-        .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
-        .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
-        .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 15px 0; }
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 18px; border-radius: 12px; margin-bottom: 15px; }
+        h2 { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; border-left: 3px solid var(--accent); padding-left: 10px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .stat-box { background: #030712; padding: 10px; border-radius: 8px; border: 1px solid #1f2937; text-align: center; }
+        .stat-label { font-size: 0.5rem; color: #64748b; display: block; text-transform: uppercase; }
+        .stat-val { font-size: 0.9rem; font-weight: 800; color: #fff; }
+        .progress-container { background: #030712; height: 8px; border-radius: 4px; border: 1px solid #1e293b; overflow: hidden; margin: 10px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
-        .ana-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.75rem; }
-        .ana-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #1e293b; text-transform: uppercase; }
-        .ana-table td { padding: 10px 8px; border-bottom: 1px solid #0f172a; }
-        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
-        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-row { background: #0d1117; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; }
-        .log-info { display: flex; flex-direction: column; gap: 4px; }
-        .log-basis { font-size: 0.7rem; color: #64748b; font-style: italic; }
+        .ana-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+        .ana-table th { text-align: left; color: #64748b; padding: 6px; border-bottom: 1px solid #1e293b; }
+        .ana-table td { padding: 8px 6px; border-bottom: 1px solid #0f172a; }
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 10px; border-radius: 6px; outline: none; margin-bottom: 8px; font-size: 0.8rem; }
+        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 0.75rem; }
+        .log-row { background: #0d1117; padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; }
+        .basis-tag { font-size: 0.6rem; color: var(--accent); background: rgba(0,210,255,0.1); padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2 style="border:none; text-align:center; padding:0; margin-bottom:30px; color:white;">KUAD ELITE</h2>
+        <h2 style="border:none; text-align:center; padding:0; margin-bottom:25px; color:white; font-size:1rem;">KUAD ELITE</h2>
         <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
         <div class="nav-item" onclick="showSec('journal')">JOURNAL ENTRY</div>
         <div class="nav-item" onclick="showSec('logs')">TRADE LOGS</div>
@@ -44,28 +43,28 @@
     <div class="main">
         <div id="dash" class="section active">
             <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h2>Performance</h2>
-                    <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold; cursor:pointer;"></select>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h2>Monitor</h2>
+                    <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold;"></select>
                 </div>
                 <div class="grid-4">
-                    <div class="stat-box"><span class="stat-label">Balance</span><div id="d-cur" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Bal</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
-                    <div class="stat-box"><span class="stat-label">Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
-                    <div class="stat-box"><span class="stat-label">Status</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Win%</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
+                    <div class="stat-box"><span class="stat-label">Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
                 </div>
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
-                <div id="p-text" style="text-align:right; font-size:0.7rem; color:var(--accent); font-weight:bold;">0%</div>
+                <div id="p-text" style="text-align:right; font-size:0.6rem; color:var(--accent);">0%</div>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="card"><h2>Weekly Stats</h2><table class="ana-table"><tbody id="day-ana"></tbody></table></div>
-                <div class="card"><h2>Strategy Stats</h2><table class="ana-table"><tbody id="strat-ana"></tbody></table></div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div class="card"><h2>Weekly</h2><table class="ana-table"><tbody id="day-ana"></tbody></table></div>
+                <div class="card"><h2>Strategy</h2><table class="ana-table"><tbody id="strat-ana"></tbody></table></div>
             </div>
         </div>
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Commit New Trade</h2>
+                <h2>New Entry</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
@@ -73,17 +72,27 @@
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <select id="j-res" style="color:var(--win); font-weight:bold;"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
-                    <input type="number" id="j-pnl" placeholder="Net P/L ($)">
+                    <select id="j-res" style="color:var(--win);"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
+                    <input type="number" id="j-pnl" placeholder="Amount ($)">
                 </div>
-                <input type="text" id="j-basis" placeholder="Trade Basis / Reason (e.g. SMC Inducement, ICT Judas Swing)">
-                <button class="primary" onclick="logTrade()">Save Trade to Log</button>
+                <select id="j-basis">
+                    <option value="" disabled selected>Select Trade Basis</option>
+                    <option value="Session Entry">Session Entry</option>
+                    <option value="IDM Sweep">IDM Sweep</option>
+                    <option value="Order Block">Order Block</option>
+                    <option value="Breakout">Breakout</option>
+                </select>
+                <button class="primary" onclick="logTrade()">Save to Logs</button>
             </div>
         </div>
 
         <div id="logs" class="section">
             <div class="card">
-                <h2>Detailed Trade History</h2>
+                <h2>Log Analytics</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                    <div class="stat-box"><span class="stat-label">Best Pair</span><div id="log-best-pair" class="stat-val">-</div></div>
+                    <div class="stat-box"><span class="stat-label">Best Session</span><div id="log-best-sess" class="stat-val">-</div></div>
+                </div>
                 <div id="full-history"></div>
             </div>
         </div>
@@ -91,9 +100,15 @@
         <div id="calc" class="section">
             <div class="card">
                 <h2>Lot Calculator</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;"><input type="number" id="c-bal" placeholder="Balance"><input type="number" id="c-risk" value="1"></div>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
+                    <input type="number" id="c-bal" placeholder="Balance">
+                    <input type="number" id="c-risk" placeholder="Risk%">
+                </div>
                 <input type="number" id="c-sl" placeholder="SL Pips">
-                <div style="font-size:3.5rem; font-weight:900; text-align:center; color:var(--accent); margin:15px 0;" id="lot-res">0.00</div>
+                <div style="text-align:center; padding:15px 0;">
+                    <div style="font-size:0.6rem; color:#64748b; text-transform:uppercase;">Recommended Lot</div>
+                    <div style="font-size:1.8rem; font-weight:900; color:var(--accent);" id="lot-res">0.00</div>
+                </div>
                 <button class="primary" onclick="runCalc()">Calculate & Copy</button>
             </div>
         </div>
@@ -103,10 +118,10 @@
                 <h2 id="form-title">Accounts</h2>
                 <input type="hidden" id="edit-idx" value="-1">
                 <input type="text" id="a-name" placeholder="Name">
-                <div class="grid-4" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <input type="number" id="a-st" placeholder="Start"><input type="number" id="a-cur" placeholder="Current"><input type="number" id="a-trg" placeholder="Target">
                 </div>
-                <button class="primary" onclick="handleAcc()">Save Account</button>
+                <button class="primary" onclick="handleAcc()">Save</button>
             </div>
             <div id="acc-list"></div>
         </div>
@@ -128,7 +143,7 @@
         if(db.active === -1) return;
         let pnl = parseFloat(document.getElementById('j-pnl').value);
         const res = document.getElementById('j-res').value;
-        const basis = document.getElementById('j-basis').value || "No basis recorded";
+        const basis = document.getElementById('j-basis').value || "No Setup";
         if(isNaN(pnl)) return;
         pnl = (res === 'loss') ? -Math.abs(pnl) : Math.abs(pnl);
 
@@ -142,12 +157,7 @@
         });
         save(); updateUI();
         document.getElementById('j-pnl').value = '';
-        document.getElementById('j-basis').value = '';
-        alert("Trade Logged!");
     }
-
-    function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-    function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
 
     function updateUI() {
         const sel = document.getElementById('acc-select');
@@ -181,43 +191,47 @@
             document.getElementById('day-ana').innerHTML = `<tr><th>Day</th><th>Win%</th><th>Net</th></tr>` + getAna('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
             document.getElementById('strat-ana').innerHTML = `<tr><th>Style</th><th>Win%</th><th>Net</th></tr>` + getAna('session', ['London', 'New York']) + getAna('type', ['Scalping', 'Day Trade']);
 
-            // TRADE LOGS (Alag Tab ka Content)
+            // LOGS TAB: Performance Stats
+            if(accLogs.length > 0) {
+                const getBest = (key) => {
+                    const counts = {};
+                    accLogs.filter(l => l.pnl > 0).forEach(l => { counts[l[key]] = (counts[l[key]] || 0) + 1; });
+                    return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, "-");
+                };
+                document.getElementById('log-best-pair').innerText = getBest('pair');
+                document.getElementById('log-best-sess').innerText = getBest('session');
+            }
+
             document.getElementById('full-history').innerHTML = accLogs.map(l => `
                 <div class="log-row">
-                    <div class="log-info">
-                        <span style="font-weight:bold; font-size:0.9rem;">${l.day} | ${l.pair} | ${l.session}</span>
-                        <span class="log-basis">Basis: ${l.basis}</span>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}; font-weight:bold; font-size:1.1rem;">${l.pnl >=0 ? '+' : ''}${l.pnl}$</div>
-                        <div style="font-size:0.6rem; color:#64748b;">${l.type}</div>
-                    </div>
+                    <div><span style="font-weight:bold; font-size:0.75rem;">${l.day} | ${l.pair} | ${l.session}</span><br><span class="basis-tag">${l.basis}</span></div>
+                    <div style="text-align:right;"><div style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}; font-weight:bold; font-size:0.85rem;">${l.pnl >=0 ? '+' : ''}${l.pnl}$</div><div style="font-size:0.55rem; color:#64748b;">${l.type}</div></div>
                 </div>`).join('');
         }
-        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="log-row"><span>${a.name}</span><div><button onclick="editAcc(${i})" style="background:var(--accent); border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">EDIT</button></div></div>`).join('');
-    }
-
-    function handleAcc() {
-        const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), 
-              cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value),
-              idx = parseInt(document.getElementById('edit-idx').value);
-        if(!n) return;
-        const obj = {name: n, start: st, current: cur, target: trg};
-        if(idx === -1) { db.accs.push(obj); if(db.active === -1) db.active = 0; }
-        else { db.accs[idx] = obj; document.getElementById('edit-idx').value = "-1"; }
-        save(); updateUI(); showSec('dash');
+        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="log-row"><span>${a.name}</span><button onclick="editAcc(${i})" style="background:var(--accent); border:none; padding:4px 8px; border-radius:4px; font-size:0.6rem; cursor:pointer;">EDIT</button></div>`).join('');
     }
 
     function runCalc() {
         const bal = parseFloat(document.getElementById('c-bal').value) || (db.active !== -1 ? db.accs[db.active].current : 0);
         const sl = parseFloat(document.getElementById('c-sl').value), risk = parseFloat(document.getElementById('c-risk').value);
-        if(bal && sl) {
+        if(bal && sl && risk) {
             const lot = (bal * (risk/100)) / (sl * 10);
             document.getElementById('lot-res').innerText = lot.toFixed(2);
             navigator.clipboard.writeText(lot.toFixed(2));
             alert("Lot Copied!");
         }
     }
+    function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+    function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
+    function handleAcc() {
+        const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value), idx = parseInt(document.getElementById('edit-idx').value);
+        if(!n) return;
+        const obj = {name: n, start: st, current: cur, target: trg};
+        if(idx === -1) { db.accs.push(obj); if(db.active === -1) db.active = 0; }
+        else { db.accs[idx] = obj; document.getElementById('edit-idx').value = "-1"; }
+        save(); updateUI(); showSec('dash');
+    }
+    function editAcc(i) { const a = db.accs[i]; document.getElementById('a-name').value = a.name; document.getElementById('a-st').value = a.start; document.getElementById('a-cur').value = a.current; document.getElementById('a-trg').value = a.target; document.getElementById('edit-idx').value = i; showSec('accounts'); }
     updateUI();
 </script>
 </body>
