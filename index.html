@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | ONE-TAP ENTRY</title>
+    <title>KUAD ELITE | PERMANENT STORAGE</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="card">
-                <h2>Session & Strategy Analysis</h2>
+                <h2>Strategy Analytics</h2>
                 <table class="ana-table">
                     <thead><tr><th>Category</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
                     <tbody id="ana-body"></tbody>
@@ -61,7 +61,7 @@
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>New Journal Entry</h2>
+                <h2>New Trade Entry</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
@@ -69,10 +69,7 @@
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <select id="j-res" style="border-color:var(--win); color:var(--win); font-weight:bold;">
-                        <option value="win">PROFIT (+)</option>
-                        <option value="loss" style="color:var(--loss);">LOSS (-)</option>
-                    </select>
+                    <select id="j-res" style="color:var(--win); font-weight:bold;"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
                     <input type="number" id="j-pnl" placeholder="Amount ($)">
                 </div>
                 <button class="primary" onclick="logTrade()">Commit Entry</button>
@@ -110,7 +107,9 @@
     </div>
 
 <script>
-    const DB_KEY = 'KUAD_ELITE_DATA_FINAL_V23';
+    // FIXED FOREVER KEY: Isko ab main kabhi nahi badlunga.
+    const DB_KEY = 'KUAD_ELITE_FOREVER_DATA';
+    
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [] };
 
     function showSec(id) {
@@ -137,10 +136,8 @@
         let pnl = parseFloat(document.getElementById('j-pnl').value);
         const res = document.getElementById('j-res').value;
         if(isNaN(pnl)) return;
-
-        // Auto Minus Logic
-        if(res === 'loss' && pnl > 0) pnl = -pnl;
-        if(res === 'win' && pnl < 0) pnl = Math.abs(pnl);
+        if(res === 'loss') pnl = -Math.abs(pnl);
+        else pnl = Math.abs(pnl);
 
         db.accs[db.active].current += pnl;
         db.logs.unshift({ 
