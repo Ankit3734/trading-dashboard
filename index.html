@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | SYNC FIXED</title>
+    <title>KUAD ELITE | ANALYTICS PRO</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -13,19 +13,25 @@
         .section { display: none; max-width: 900px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         h2 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 12px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
-        .progress-container { background: #030712; height: 12px; border-radius: 6px; border: 1px solid #1e293b; overflow: hidden; margin-bottom: 10px; }
+        
+        /* Analytics Cards */
+        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .ana-card { background: linear-gradient(145deg, #0f172a, #111827); border: 1px solid #1e293b; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+        .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 10px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
-        .progress-text { font-size: 0.7rem; color: var(--accent); text-align: right; font-weight: bold; }
+
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; }
-        .badge { font-size: 0.6rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; border: none; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -34,25 +40,34 @@
         <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
         <div class="nav-item" onclick="showSec('calc')">LOT CALCULATOR</div>
         <div class="nav-item" onclick="showSec('journal')">TRADE JOURNAL</div>
-        <div class="nav-item" onclick="showSec('daily')">DAILY LOG</div>
         <div class="nav-item" onclick="showSec('accounts')">ACCOUNTS</div>
     </div>
 
     <div class="main">
         <div id="dash" class="section active">
             <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2>Target Tracker</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2>Performance Monitor</h2>
                     <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold; cursor:pointer;"></select>
                 </div>
                 <div class="grid-4">
-                    <div class="stat-box"><span class="stat-label">Start</span><div id="d-st" class="stat-val">$0</div></div>
-                    <div class="stat-box"><span class="stat-label">Current</span><div id="d-cur" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Current Bal</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
                 </div>
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
-                <div id="p-text" class="progress-text">0% Completed</div>
+                
+                <div class="analytics-grid">
+                    <div class="ana-card">
+                        <span class="stat-label">Best Trading Session</span>
+                        <div id="best-session" class="stat-val" style="color:var(--win)">-</div>
+                    </div>
+                    <div class="ana-card">
+                        <span class="stat-label">Most Profitable Day</span>
+                        <div id="best-day" class="stat-val" style="color:var(--win)">-</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -71,28 +86,18 @@
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Trade Journal (Updates Balance)</h2>
+                <h2>Journal Entry (Syncs All Data)</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
                 </div>
-                <input type="number" id="j-pnl" placeholder="P/L ($) - Loss ke liye minus lagayein">
-                <button class="primary" onclick="logTrade('journal')">Save Trade & Update Bal</button>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                    <input type="number" id="j-pnl" placeholder="Net P/L ($)">
+                </div>
+                <button class="primary" onclick="logTrade()">Commit Entry</button>
             </div>
             <div id="journal-history"></div>
-        </div>
-
-        <div id="daily" class="section">
-            <div class="card">
-                <h2>Daily Log (Read-Only History)</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <select id="d-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <input type="number" id="d-pnl" placeholder="Net Daily P/L ($)">
-                </div>
-                <button class="primary" onclick="logTrade('daily')" style="background: #2d3748;">Save Daily Record Only</button>
-                <p style="font-size:0.6rem; color:#64748b; margin-top:5px;">*Daily entries won't change Dashboard balance to avoid double-counting.</p>
-            </div>
-            <div id="daily-history"></div>
         </div>
 
         <div id="accounts" class="section">
@@ -112,8 +117,8 @@
     </div>
 
 <script>
-    const DB_KEY = 'KUAD_ELITE_DATA_MASTER';
-    let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [], daily: [] };
+    const DB_KEY = 'KUAD_ELITE_FINAL_MASTER_V20';
+    let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [] };
 
     function showSec(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -134,29 +139,23 @@
         save(); updateUI(); showSec('dash');
     }
 
-    function logTrade(type) {
-        if(db.active === -1) return alert("Select an account!");
-        const pnl = parseFloat(document.getElementById(type === 'journal' ? 'j-pnl' : 'd-pnl').value);
+    function logTrade() {
+        if(db.active === -1) return;
+        const pnl = parseFloat(document.getElementById('j-pnl').value);
         if(isNaN(pnl)) return;
 
-        // CRITICAL FIX: Only update balance for Journal entries
-        if(type === 'journal') {
-            db.accs[db.active].current += pnl;
-        }
-
-        const entry = { acc: db.accs[db.active].name, pnl, date: new Date().toLocaleDateString() };
-        
-        if(type === 'journal') { 
-            entry.pair = document.getElementById('j-pair').value; 
-            entry.session = document.getElementById('j-session').value; 
-            db.logs.unshift(entry); 
-        } else { 
-            entry.day = document.getElementById('d-day').value; 
-            db.daily.unshift(entry); 
-        }
-        
+        db.accs[db.active].current += pnl;
+        const entry = { 
+            acc: db.accs[db.active].name, 
+            pnl, 
+            pair: document.getElementById('j-pair').value, 
+            session: document.getElementById('j-session').value, 
+            day: document.getElementById('j-day').value,
+            date: new Date().toLocaleDateString() 
+        };
+        db.logs.unshift(entry);
         save(); updateUI();
-        alert(type === 'journal' ? "Trade Saved & Balance Updated!" : "Daily Record Saved (Balance Not Affected)");
+        alert("Data Synchronized!");
     }
 
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
@@ -169,28 +168,43 @@
 
         if(db.active !== -1) {
             const a = db.accs[db.active];
-            document.getElementById('d-st').innerText = `$${a.start}`;
-            document.getElementById('d-cur').innerText = `$${a.current.toFixed(2)}`;
+            const accLogs = db.logs.filter(l => l.acc === a.name);
+
+            document.getElementById('d-cur').innerText = `$${a.current.toFixed(0)}`;
             document.getElementById('d-trg').innerText = `$${a.target}`;
             const diff = a.target - a.current;
-            document.getElementById('d-rem').innerText = diff <= 0 ? "ACHIEVED 🚀" : `$${diff.toFixed(2)}`;
+            document.getElementById('d-rem').innerText = diff <= 0 ? "DONE 🚀" : `$${diff.toFixed(0)}`;
 
+            // Win Rate
+            const wins = accLogs.filter(l => l.pnl > 0).length;
+            const wr = accLogs.length > 0 ? (wins / accLogs.length) * 100 : 0;
+            document.getElementById('d-wr').innerText = Math.round(wr) + '%';
+
+            // Progress Bar
             let progress = ((a.current - a.start) / (a.target - a.start)) * 100;
             progress = Math.max(0, Math.min(100, progress));
             document.getElementById('p-bar').style.width = progress + '%';
-            document.getElementById('p-text').innerText = Math.round(progress) + '% Completed';
 
-            const f = (list, eid, isD) => {
-                document.getElementById(eid).innerHTML = list.filter(l => l.acc === a.name).map(l => `
-                    <div class="log-item"><span><b>${isD ? l.day : l.pair}</b> (${l.date})</span>
-                    <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
-            };
-            f(db.logs, 'journal-history', false); f(db.daily, 'daily-history', true);
+            // Analytics: Best Session & Day
+            if(accLogs.length > 0) {
+                const getBest = (key) => {
+                    const counts = {};
+                    accLogs.filter(l => l.pnl > 0).forEach(l => { counts[l[key]] = (counts[l[key]] || 0) + 1; });
+                    return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, "-");
+                };
+                document.getElementById('best-session').innerText = getBest('session');
+                document.getElementById('best-day').innerText = getBest('day');
+            }
+
+            // History
+            document.getElementById('journal-history').innerHTML = accLogs.map(l => `
+                <div class="log-item"><span><b>${l.pair}</b> | ${l.session} | ${l.day}</span>
+                <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
         }
         document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `
             <div class="log-item"><span>${a.name}</span><div>
-            <button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000;">EDIT</button>
-            <button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; margin-left:5px;">DEL</button>
+            <button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">EDIT</button>
+            <button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">DEL</button>
             </div></div>`).join('');
     }
 
@@ -213,7 +227,7 @@
         }
     }
 
-    function delAcc(i) { if(confirm("Delete?")) { db.accs.splice(i,1); db.active = 0; save(); location.reload(); } }
+    function delAcc(i) { if(confirm("Delete Account?")) { db.accs.splice(i,1); db.active = 0; save(); location.reload(); } }
     updateUI();
 </script>
 </body>
