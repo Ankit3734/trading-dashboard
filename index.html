@@ -2,98 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | TRADING OS</title>
+    <title>KUAD ELITE | MULTI-ACCOUNT OS</title>
     <style>
-        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; --be: #f59e0b; }
+        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 240px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 500; }
+        
+        .sidebar { width: 260px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
+        .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.85rem; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
+        
         .main { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; max-width: 800px; margin: 0 auto; animation: slideUp 0.4s ease; }
+        .section { display: none; max-width: 900px; margin: 0 auto; animation: slideUp 0.4s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
-        h2 { font-size: 1.1rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 25px; border-left: 4px solid var(--accent); padding-left: 15px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        label { display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; font-weight: 600; }
-        input, select, textarea { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 14px; border-radius: 10px; outline: none; transition: 0.2s; }
-        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
-        .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .tag-btn { background: #1f2937; border: 1px solid #374151; color: #94a3b8; padding: 8px 16px; border-radius: 25px; font-size: 0.75rem; cursor: pointer; }
-        .tag-btn.selected { background: var(--accent); color: #000; font-weight: bold; }
-        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 16px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
-        .history-card { background: #0f172a; border-radius: 12px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #334155; }
+
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 20px; }
+        h2 { font-size: 1rem; color: var(--accent); text-transform: uppercase; margin-bottom: 25px; border-left: 4px solid var(--accent); padding-left: 15px; }
+        
+        .acc-display { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 15px 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--accent); }
+        .balance-text { font-size: 1.8rem; font-weight: 800; color: #fff; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; }
+        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
+        
+        .history-card { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #334155; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2 style="border:none; text-align:center; padding:0;">KUAD ELITE</h2>
-        <div class="nav-item active" onclick="showSec('calc')">Lot Calculator</div>
-        <div class="nav-item" onclick="showSec('journal')">Trade Journal</div>
-        <div class="nav-item" onclick="showSec('history')">Trade History</div>
-        <div class="nav-item" onclick="showSec('stats')">Analytics</div>
+        <h2 style="border:none; text-align:center; padding:0; margin-bottom:40px;">KUAD ELITE</h2>
+        <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
+        <div class="nav-item" onclick="showSec('manage-acc')">MANAGE ACCOUNTS</div>
+        <div class="nav-item" onclick="showSec('journal')">LOG TRADE</div>
+        <div class="nav-item" onclick="showSec('history')">HISTORY</div>
     </div>
 
     <div class="main">
-        <div id="calc" class="section active">
-            <div class="card">
-                <h2>Execution Engine</h2>
-                <div class="grid">
-                    <div><label>Account Balance ($)</label><input type="number" id="bal" placeholder="100000"></div>
-                    <div><label>Risk %</label><input type="number" id="rsk" placeholder="1"></div>
-                    <div><label>Stop Loss (Pips)</label><input type="number" id="sl" placeholder="15"></div>
-                    <div><label>Position Size</label><div id="lot-res" style="font-size: 2.5rem; color: var(--accent); font-weight: 900;">0.00</div></div>
+        <div class="acc-display">
+            <div>
+                <label style="font-size:0.7rem; color:var(--accent)">ACTIVE ACCOUNT</label>
+                <select id="acc-switcher" onchange="switchAccount()" style="margin:0; background:transparent; border:none; font-weight:bold; font-size:1.2rem; cursor:pointer;"></select>
+            </div>
+            <div style="text-align:right">
+                <label style="font-size:0.7rem; color:var(--accent)">CURRENT BALANCE</label>
+                <div id="active-bal" class="balance-text">$0.00</div>
+            </div>
+        </div>
+
+        <div id="dash" class="section active">
+            <div class="grid">
+                <div class="card">
+                    <h2>Target Progress</h2>
+                    <div id="target-info" style="font-size: 1.2rem; font-weight: bold;">Set an account to see target</div>
+                    <div id="target-diff" style="color: var(--accent); margin-top:10px;">$0.00 to goal</div>
                 </div>
-                <button class="primary" onclick="calcLot()">Calculate Lots</button>
+                <div class="card">
+                    <h2>Lot Calc</h2>
+                    <input type="number" id="sl-pips" placeholder="Stop Loss (Pips)">
+                    <input type="number" id="risk-per" placeholder="Risk %" value="1">
+                    <div id="lot-output" style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-top:10px;">0.00</div>
+                    <button class="primary" onclick="quickCalc()">Calculate</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="manage-acc" class="section">
+            <div class="card">
+                <h2>Add New Account</h2>
+                <input type="text" id="new-acc-name" placeholder="e.g. 100K Funded">
+                <input type="number" id="new-acc-bal" placeholder="Starting Balance ($)">
+                <input type="number" id="new-acc-target" placeholder="Target Profit ($)">
+                <button class="primary" onclick="addAccount()">Create Account</button>
             </div>
         </div>
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Journal Entry</h2>
+                <h2>New Trade Entry</h2>
                 <div class="grid">
-                    <div><label>Select Pair</label>
-                        <select id="pair">
-                            <option value="XAUUSD">GOLD (XAUUSD)</option>
-                            <option value="EURUSD">EURUSD</option>
-                            <option value="GBPUSD">GBPUSD</option>
-                            <option value="USDJPY">USDJPY</option>
-                            <option value="AUDUSD">AUDUSD</option>
-                            <option value="USDCAD">USDCAD</option>
-                            <option value="BTCUSD">BITCOIN</option>
-                        </select>
-                    </div>
-                    <div><label>Outcome</label>
-                        <select id="out">
-                            <option value="WIN">PROFIT (HIT TP)</option>
-                            <option value="LOSS">LOSS (HIT SL)</option>
-                            <option value="BE">BREAK-EVEN EXIT</option>
-                        </select>
-                    </div>
+                    <select id="p-pair">
+                        <option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option>
+                    </select>
+                    <select id="p-out">
+                        <option value="WIN">WIN</option><option value="LOSS">LOSS</option><option value="BE">BREAK-EVEN</option>
+                    </select>
                 </div>
-                
-                <label style="margin-top:20px;">Psychology Tags</label>
-                <div class="tags">
-                    <div class="tag-btn" onclick="this.classList.toggle('selected')">Rules Followed</div>
-                    <div class="tag-btn" onclick="this.classList.toggle('selected')">FOMO</div>
-                    <div class="tag-btn" onclick="this.classList.toggle('selected')">Greed</div>
-                    <div class="tag-btn" onclick="this.classList.toggle('selected')">Revenge</div>
-                    <div class="tag-btn" onclick="this.classList.toggle('selected')">Early Exit</div>
-                </div>
-
-                <button class="primary" onclick="saveJournal()">Log Trade</button>
+                <input type="number" id="p-profit" placeholder="Profit/Loss Amount ($) e.g. 500 or -200">
+                <button class="primary" onclick="saveTrade()">Log & Update Balance</button>
             </div>
         </div>
 
         <div id="history" class="section">
-            <h2 style="border:none">Past Journey</h2>
-            <div id="history-list"></div>
+            <div id="trade-history-list"></div>
         </div>
     </div>
 
 <script>
+    let state = JSON.parse(localStorage.getItem('kuad_v7_state')) || { accounts: [], activeIdx: -1, trades: [] };
+
     function showSec(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -101,40 +109,73 @@
         event.currentTarget.classList.add('active');
     }
 
-    function calcLot() {
-        let b = document.getElementById('bal').value, r = document.getElementById('rsk').value, s = document.getElementById('sl').value;
-        if(b && r && s) document.getElementById('lot-res').innerText = ((b * (r/100)) / (s * 10)).toFixed(2);
+    function addAccount() {
+        const name = document.getElementById('new-acc-name').value;
+        const bal = parseFloat(document.getElementById('new-acc-bal').value);
+        const target = parseFloat(document.getElementById('new-acc-target').value);
+        if(!name || !bal) return alert("Details bharo bhai!");
+
+        state.accounts.push({ name, balance: bal, startBal: bal, target: target });
+        if(state.activeIdx === -1) state.activeIdx = 0;
+        saveState();
+        location.reload();
     }
 
-    let logs = JSON.parse(localStorage.getItem('kuad_v6_logs')) || [];
-
-    function saveJournal() {
-        let selTags = []; document.querySelectorAll('.tag-btn.selected').forEach(t => selTags.push(t.innerText));
-        let data = {
-            p: document.getElementById('pair').value,
-            o: document.getElementById('out').value,
-            t: selTags,
-            d: new Date().toLocaleDateString()
-        };
-        logs.unshift(data);
-        localStorage.setItem('kuad_v6_logs', JSON.stringify(logs));
-        renderHistory();
-        alert("Trade Journaled! 🚀");
+    function switchAccount() {
+        state.activeIdx = document.getElementById('acc-switcher').selectedIndex;
+        saveState();
+        updateUI();
     }
 
-    function renderHistory() {
-        let h = '';
-        logs.forEach(l => {
-            let color = l.o === 'WIN' ? '#10b981' : (l.o === 'LOSS' ? '#ef4444' : '#f59e0b');
-            h += `<div class="history-card" style="border-left-color:${color}">
-                <div style="display:flex; justify-content:space-between"><b>${l.p}</b> <span>${l.d}</span></div>
-                <div style="font-size:0.8rem; color:${color}; font-weight:bold; margin:5px 0;">Outcome: ${l.o}</div>
-                <div style="font-size:0.7rem; color:#64748b">Tags: ${l.t.join(', ')}</div>
-            </div>`;
+    function saveTrade() {
+        const amt = parseFloat(document.getElementById('p-profit').value);
+        const acc = state.accounts[state.activeIdx];
+        if(!acc || isNaN(amt)) return alert("Data check karo!");
+
+        acc.balance += amt;
+        state.trades.unshift({
+            accName: acc.name,
+            pair: document.getElementById('p-pair').value,
+            outcome: document.getElementById('p-out').value,
+            amount: amt,
+            date: new Date().toLocaleDateString()
         });
-        document.getElementById('history-list').innerHTML = h;
+
+        saveState();
+        updateUI();
+        alert("Account Updated!");
     }
-    renderHistory();
+
+    function quickCalc() {
+        const acc = state.accounts[state.activeIdx];
+        const sl = document.getElementById('sl-pips').value;
+        const risk = document.getElementById('risk-per').value;
+        if(acc && sl) {
+            const lot = (acc.balance * (risk/100)) / (sl * 10);
+            document.getElementById('lot-output').innerText = lot.toFixed(2);
+        }
+    }
+
+    function updateUI() {
+        const switcher = document.getElementById('acc-switcher');
+        switcher.innerHTML = state.accounts.map(a => `<option>${a.name}</option>`).join('');
+        switcher.selectedIndex = state.activeIdx;
+
+        if(state.activeIdx !== -1) {
+            const acc = state.accounts[state.activeIdx];
+            document.getElementById('active-bal').innerText = `$${acc.balance.toLocaleString()}`;
+            const diff = (acc.startBal + acc.target) - acc.balance;
+            document.getElementById('target-info').innerText = `Goal: $${(acc.startBal + acc.target).toLocaleString()}`;
+            document.getElementById('target-diff').innerText = diff > 0 ? `$${diff.toLocaleString()} to go` : "Target Hit! 🚀";
+        }
+
+        document.getElementById('trade-history-list').innerHTML = state.trades
+            .filter(t => t.accName === state.accounts[state.activeIdx]?.name)
+            .map(t => `<div class="history-card"><b>${t.pair}</b>: ${t.amount > 0 ? '+' : ''}$${t.amount} (${t.date})</div>`).join('');
+    }
+
+    function saveState() { localStorage.setItem('kuad_v7_state', JSON.stringify(state)); }
+    updateUI();
 </script>
 </body>
 </html>
