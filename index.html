@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | FULL ANALYTICS</title>
+    <title>KUAD ELITE | STRATEGY PRO</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -13,27 +13,20 @@
         .section { display: none; max-width: 1000px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         h2 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 12px; }
-        
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
-
-        /* Performance Table */
         .ana-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; }
         .ana-table th { text-align: left; color: #64748b; padding: 10px; border-bottom: 1px solid #1e293b; text-transform: uppercase; font-size: 0.65rem; }
         .ana-table td { padding: 12px 10px; border-bottom: 1px solid #0f172a; }
-        .win-text { color: var(--win); font-weight: bold; }
-        
         .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 15px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
-
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -56,24 +49,16 @@
                     <div class="stat-box"><span class="stat-label">Balance</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
-                    <div class="stat-box"><span class="stat-label">Total Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
+                    <div class="stat-box"><span class="stat-label">Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
                 </div>
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
             </div>
 
             <div class="card">
-                <h2>Session Performance</h2>
-                <table class="ana-table" id="session-table">
-                    <thead><tr><th>Session</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
-                    <tbody id="session-body"></tbody>
-                </table>
-            </div>
-
-            <div class="card">
-                <h2>Weekly Performance (Day-wise)</h2>
-                <table class="ana-table" id="day-table">
-                    <thead><tr><th>Day</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
-                    <tbody id="day-body"></tbody>
+                <h2>Session & Day Analysis</h2>
+                <table class="ana-table">
+                    <thead><tr><th>Category</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
+                    <tbody id="ana-body"></tbody>
                 </table>
             </div>
         </div>
@@ -94,9 +79,10 @@
         <div id="journal" class="section">
             <div class="card">
                 <h2>Journal Entry</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
+                    <select id="j-type"><option>Scalping</option><option>Day Trade</option><option>Swing</option></select>
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
@@ -124,7 +110,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'KUAD_ELITE_DATA_FINAL_V21';
+    const DB_KEY = 'KUAD_ELITE_DATA_FINAL_V22';
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [] };
 
     function showSec(id) {
@@ -155,6 +141,7 @@
             acc: db.accs[db.active].name, pnl, 
             pair: document.getElementById('j-pair').value, 
             session: document.getElementById('j-session').value, 
+            type: document.getElementById('j-type').value,
             day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() 
         });
         save(); updateUI();
@@ -178,34 +165,31 @@
             document.getElementById('d-rem').innerText = diff <= 0 ? "DONE 🚀" : `$${diff.toFixed(0)}`;
 
             const wins = accLogs.filter(l => l.pnl > 0).length;
-            const wr = accLogs.length > 0 ? (wins / accLogs.length) * 100 : 0;
-            document.getElementById('d-wr').innerText = Math.round(wr) + '%';
+            document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins / accLogs.length) * 100) + '%' : '0%';
 
             let progress = ((a.current - a.start) / (a.target - a.start)) * 100;
             document.getElementById('p-bar').style.width = Math.max(0, Math.min(100, progress)) + '%';
 
-            // GENERATE TABLES
-            const generateTable = (key, list) => {
-                const stats = {};
-                list.forEach(val => stats[val] = { t:0, w:0, pnl:0 });
-                accLogs.forEach(l => {
-                    if(stats[l[key]]) {
-                        stats[l[key]].t++;
-                        if(l.pnl > 0) stats[l[key]].w++;
-                        stats[l[key]].pnl += l.pnl;
+            const generateAna = () => {
+                let html = '';
+                const categories = ['London', 'New York', 'Asia', 'Scalping', 'Day Trade', 'Swing'];
+                categories.forEach(cat => {
+                    const filtered = accLogs.filter(l => l.session === cat || l.type === cat);
+                    if(filtered.length > 0) {
+                        const cWins = filtered.filter(l => l.pnl > 0).length;
+                        const cPnl = filtered.reduce((sum, l) => sum + l.pnl, 0);
+                        html += `<tr><td>${cat}</td><td>${filtered.length}</td><td>${Math.round((cWins/filtered.length)*100)}%</td><td style="color:${cPnl >=0 ? 'var(--win)' : 'var(--loss)'}">${cPnl >=0 ? '+' : ''}${cPnl}$</td></tr>`;
                     }
                 });
-                return list.map(v => {
-                    const s = stats[v] || { t:0, w:0, pnl:0 };
-                    const winRate = s.t > 0 ? Math.round((s.w / s.t) * 100) : 0;
-                    return `<tr><td>${v}</td><td>${s.t}</td><td class="win-text">${winRate}%</td><td style="color:${s.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${s.pnl >=0 ? '+' : ''}${s.pnl}$</td></tr>`;
-                }).join('');
+                return html;
             };
+            document.getElementById('ana-body').innerHTML = generateAna();
 
-            document.getElementById('session-body').innerHTML = generateTable('session', ['London', 'New York', 'Asia']);
-            document.getElementById('day-body').innerHTML = generateTable('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
-
-            document.getElementById('journal-history').innerHTML = accLogs.map(l => `<div class="log-item"><span><b>${l.pair}</b> | ${l.session} | ${l.day}</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
+            document.getElementById('journal-history').innerHTML = accLogs.map(l => `
+                <div class="log-item">
+                    <span><b>${l.pair}</b> | ${l.session} | ${l.type}</span>
+                    <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span>
+                </div>`).join('');
         }
         document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="log-item"><span>${a.name}</span><div><button onclick="editAcc(${i})" style="background:var(--accent); color:#000; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">EDIT</button><button onclick="delAcc(${i})" style="background:var(--loss); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">DEL</button></div></div>`).join('');
     }
