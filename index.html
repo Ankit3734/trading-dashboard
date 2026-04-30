@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | PROGRESS PRO</title>
+    <title>KUAD ELITE | PERMANENT TERMINAL</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -14,28 +14,27 @@
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         h2 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 12px; }
         
-        /* Stats & Progress */
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
         
-        .progress-container { background: #030712; height: 12px; border-radius: 6px; border: 1px solid #1e293b; position: relative; overflow: hidden; margin-bottom: 10px; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s ease-in-out; }
+        .progress-container { background: #030712; height: 12px; border-radius: 6px; border: 1px solid #1e293b; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
         .progress-text { font-size: 0.7rem; color: var(--accent); text-align: right; font-weight: bold; }
 
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; }
         .badge { font-size: 0.6rem; padding: 4px 8px; border-radius: 4px; cursor: pointer; border: none; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2 style="border:none; text-align:center; padding:0; margin-bottom:30px; font-size:1.2rem; color:white;">KUAD ELITE</h2>
+        <h2 style="border:none; text-align:center; padding:0; margin-bottom:30px; color:white;">KUAD ELITE</h2>
         <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
         <div class="nav-item" onclick="showSec('calc')">LOT CALCULATOR</div>
         <div class="nav-item" onclick="showSec('journal')">TRADE JOURNAL</div>
@@ -50,14 +49,12 @@
                     <h2>Target Tracker</h2>
                     <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold;"></select>
                 </div>
-                
                 <div class="grid-4">
-                    <div class="stat-box"><span class="stat-label">Starting</span><div id="d-st" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Start</span><div id="d-st" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Current</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
                 </div>
-
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
                 <div id="p-text" class="progress-text">0% Completed</div>
             </div>
@@ -65,12 +62,12 @@
 
         <div id="calc" class="section">
             <div class="card">
-                <h2>Precision Calculator</h2>
+                <h2>Lot Calculator</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input type="number" id="c-bal" placeholder="Manual Balance ($)">
+                    <input type="number" id="c-bal" placeholder="Balance ($)">
                     <input type="number" id="c-risk" value="1">
                 </div>
-                <input type="number" id="c-sl" placeholder="Stop Loss (Pips)">
+                <input type="number" id="c-sl" placeholder="SL Pips">
                 <div style="font-size:3.5rem; font-weight:900; text-align:center; color:var(--accent); margin:15px 0;" id="lot-res">0.00</div>
                 <button class="primary" onclick="runCalc()">Calculate & Copy</button>
             </div>
@@ -78,7 +75,7 @@
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Trade Journal</h2>
+                <h2>Individual Trade</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
@@ -91,10 +88,10 @@
 
         <div id="daily" class="section">
             <div class="card">
-                <h2>Daily Log</h2>
+                <h2>Daily Tracker</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="d-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <input type="number" id="d-pnl" placeholder="Daily Net P/L ($)">
+                    <input type="number" id="d-pnl" placeholder="Daily P/L ($)">
                 </div>
                 <button class="primary" onclick="logTrade('daily')">Save Day</button>
             </div>
@@ -105,7 +102,7 @@
             <div class="card">
                 <h2 id="form-title">Accounts Management</h2>
                 <input type="hidden" id="edit-idx" value="-1">
-                <input type="text" id="a-name" placeholder="Account Name">
+                <input type="text" id="a-name" placeholder="Name">
                 <div class="grid-4" style="grid-template-columns: 1fr 1fr 1fr;">
                     <input type="number" id="a-st" placeholder="Start">
                     <input type="number" id="a-cur" placeholder="Current">
@@ -118,7 +115,9 @@
     </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('kuad_v17')) || { accs: [], active: -1, logs: [], daily: [] };
+    // FIXED KEY: Isko ab kabhi mat badalna, data hamesha rahega.
+    const DB_KEY = 'KUAD_ELITE_DATA_MASTER';
+    let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [], daily: [] };
 
     function showSec(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -136,7 +135,7 @@
         const obj = {name: n, start: st, current: cur, target: trg};
         if(idx === -1) { db.accs.push(obj); if(db.active === -1) db.active = 0; }
         else { db.accs[idx] = obj; document.getElementById('edit-idx').value = "-1"; }
-        save(); location.reload();
+        save(); updateUI(); showSec('dash');
     }
 
     function logTrade(type) {
@@ -151,7 +150,7 @@
     }
 
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
-    function save() { localStorage.setItem('kuad_v17', JSON.stringify(db)); }
+    function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 
     function updateUI() {
         const sel = document.getElementById('acc-select');
@@ -166,36 +165,25 @@
             const diff = a.target - a.current;
             document.getElementById('d-rem').innerText = diff <= 0 ? "ACHIEVED 🚀" : `$${diff}`;
 
-            // PROGRESS LOGIC
-            const totalNeeded = a.target - a.start;
-            const currentGain = a.current - a.start;
-            let progress = (currentGain / totalNeeded) * 100;
-            if(progress < 0) progress = 0;
-            if(progress > 100) progress = 100;
-            
+            // PROGRESS BAR
+            let progress = ((a.current - a.start) / (a.target - a.start)) * 100;
+            progress = Math.max(0, Math.min(100, progress));
             document.getElementById('p-bar').style.width = progress + '%';
             document.getElementById('p-text').innerText = Math.round(progress) + '% Completed';
 
-            // Filter history by current account
-            const filterHistory = (list, elementId, isDaily) => {
-                document.getElementById(elementId).innerHTML = list.filter(l => l.acc === a.name).map(l => `
-                    <div class="log-item">
-                        <span><b>${isDaily ? l.day : l.pair}</b> (${l.date})</span>
-                        <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span>
-                    </div>`).join('');
+            // Filter
+            const f = (list, eid, isD) => {
+                document.getElementById(eid).innerHTML = list.filter(l => l.acc === a.name).map(l => `
+                    <div class="log-item"><span><b>${isD ? l.day : l.pair}</b> (${l.date})</span>
+                    <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
             };
-            filterHistory(db.logs, 'journal-history', false);
-            filterHistory(db.daily, 'daily-history', true);
+            f(db.logs, 'journal-history', false); f(db.daily, 'daily-history', true);
         }
-
         document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `
-            <div class="acc-row" style="background:#0d1117; padding:10px; border-radius:8px; margin-bottom:5px; border:1px solid #1e293b; display:flex; justify-content:space-between;">
-                <span>${a.name}</span>
-                <div>
-                    <button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000;">EDIT</button>
-                    <button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; margin-left:5px;">DEL</button>
-                </div>
-            </div>`).join('');
+            <div class="log-item"><span>${a.name}</span><div>
+            <button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000;">EDIT</button>
+            <button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; margin-left:5px;">DEL</button>
+            </div></div>`).join('');
     }
 
     function editAcc(i) {
@@ -213,7 +201,7 @@
             const lot = (bal * (risk/100)) / (sl * 10);
             document.getElementById('lot-res').innerText = lot.toFixed(2);
             navigator.clipboard.writeText(lot.toFixed(2));
-            alert("Lot Size Copied!");
+            alert("Lot Copied!");
         }
     }
 
