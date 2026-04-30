@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | STRATEGY PRO</title>
+    <title>KUAD ELITE | ONE-TAP ENTRY</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -22,8 +22,6 @@
         .ana-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; }
         .ana-table th { text-align: left; color: #64748b; padding: 10px; border-bottom: 1px solid #1e293b; text-transform: uppercase; font-size: 0.65rem; }
         .ana-table td { padding: 12px 10px; border-bottom: 1px solid #0f172a; }
-        .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 15px 0; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
         .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; font-size: 0.85rem; }
@@ -51,16 +49,35 @@
                     <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
                 </div>
-                <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
             </div>
-
             <div class="card">
-                <h2>Session & Day Analysis</h2>
+                <h2>Session & Strategy Analysis</h2>
                 <table class="ana-table">
                     <thead><tr><th>Category</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
                     <tbody id="ana-body"></tbody>
                 </table>
             </div>
+        </div>
+
+        <div id="journal" class="section">
+            <div class="card">
+                <h2>New Journal Entry</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                    <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
+                    <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
+                    <select id="j-type"><option>Scalping</option><option>Day Trade</option><option>Swing</option></select>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                    <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                    <select id="j-res" style="border-color:var(--win); color:var(--win); font-weight:bold;">
+                        <option value="win">PROFIT (+)</option>
+                        <option value="loss" style="color:var(--loss);">LOSS (-)</option>
+                    </select>
+                    <input type="number" id="j-pnl" placeholder="Amount ($)">
+                </div>
+                <button class="primary" onclick="logTrade()">Commit Entry</button>
+            </div>
+            <div id="journal-history"></div>
         </div>
 
         <div id="calc" class="section">
@@ -74,23 +91,6 @@
                 <div style="font-size:3.5rem; font-weight:900; text-align:center; color:var(--accent); margin:15px 0;" id="lot-res">0.00</div>
                 <button class="primary" onclick="runCalc()">Calculate & Copy</button>
             </div>
-        </div>
-
-        <div id="journal" class="section">
-            <div class="card">
-                <h2>Journal Entry</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                    <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
-                    <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
-                    <select id="j-type"><option>Scalping</option><option>Day Trade</option><option>Swing</option></select>
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <input type="number" id="j-pnl" placeholder="Net P/L ($)">
-                </div>
-                <button class="primary" onclick="logTrade()">Commit Entry</button>
-            </div>
-            <div id="journal-history"></div>
         </div>
 
         <div id="accounts" class="section">
@@ -110,7 +110,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'KUAD_ELITE_DATA_FINAL_V22';
+    const DB_KEY = 'KUAD_ELITE_DATA_FINAL_V23';
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [] };
 
     function showSec(id) {
@@ -134,8 +134,14 @@
 
     function logTrade() {
         if(db.active === -1) return;
-        const pnl = parseFloat(document.getElementById('j-pnl').value);
+        let pnl = parseFloat(document.getElementById('j-pnl').value);
+        const res = document.getElementById('j-res').value;
         if(isNaN(pnl)) return;
+
+        // Auto Minus Logic
+        if(res === 'loss' && pnl > 0) pnl = -pnl;
+        if(res === 'win' && pnl < 0) pnl = Math.abs(pnl);
+
         db.accs[db.active].current += pnl;
         db.logs.unshift({ 
             acc: db.accs[db.active].name, pnl, 
@@ -145,6 +151,7 @@
             day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() 
         });
         save(); updateUI();
+        document.getElementById('j-pnl').value = '';
     }
 
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
@@ -158,17 +165,12 @@
         if(db.active !== -1) {
             const a = db.accs[db.active];
             const accLogs = db.logs.filter(l => l.acc === a.name);
-
             document.getElementById('d-cur').innerText = `$${a.current.toFixed(0)}`;
             document.getElementById('d-trg').innerText = `$${a.target}`;
             const diff = a.target - a.current;
             document.getElementById('d-rem').innerText = diff <= 0 ? "DONE 🚀" : `$${diff.toFixed(0)}`;
-
             const wins = accLogs.filter(l => l.pnl > 0).length;
             document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins / accLogs.length) * 100) + '%' : '0%';
-
-            let progress = ((a.current - a.start) / (a.target - a.start)) * 100;
-            document.getElementById('p-bar').style.width = Math.max(0, Math.min(100, progress)) + '%';
 
             const generateAna = () => {
                 let html = '';
@@ -178,13 +180,12 @@
                     if(filtered.length > 0) {
                         const cWins = filtered.filter(l => l.pnl > 0).length;
                         const cPnl = filtered.reduce((sum, l) => sum + l.pnl, 0);
-                        html += `<tr><td>${cat}</td><td>${filtered.length}</td><td>${Math.round((cWins/filtered.length)*100)}%</td><td style="color:${cPnl >=0 ? 'var(--win)' : 'var(--loss)'}">${cPnl >=0 ? '+' : ''}${cPnl}$</td></tr>`;
+                        html += `<tr><td>${cat}</td><td>${filtered.length}</td><td>${Math.round((cWins/filtered.length)*100)}%</td><td style="color:${cPnl >=0 ? 'var(--win)' : 'var(--loss)'}">${cPnl >=0 ? '+' : ''}${cPnl.toFixed(0)}$</td></tr>`;
                     }
                 });
                 return html;
             };
             document.getElementById('ana-body').innerHTML = generateAna();
-
             document.getElementById('journal-history').innerHTML = accLogs.map(l => `
                 <div class="log-item">
                     <span><b>${l.pair}</b> | ${l.session} | ${l.type}</span>
