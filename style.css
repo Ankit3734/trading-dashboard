@@ -1,0 +1,7 @@
+body { background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; }
+.terminal { width: 400px; padding: 20px; }
+.box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+h3 { color: #00ff88; font-size: 0.8rem; letter-spacing: 2px; }
+input, textarea { width: 95%; background: #000; border: 1px solid #333; color: #00ff88; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+button { width: 100%; background: #00ff88; color: black; font-weight: bold; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+#res { text-align: center; margin-top: 10px; font-weight: bold; color: #00ff88; }
