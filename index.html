@@ -2,50 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | ALL-IN-ONE TERMINAL</title>
+    <title>KUAD ELITE | PROFESSIONAL TERMINAL</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* Sidebar */
         .sidebar { width: 240px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
         .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.85rem; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
-        
-        /* Main Content */
         .main { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #0f172a, #050811); }
         .section { display: none; max-width: 850px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Professional Header & Cards */
-        .acc-display { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--accent); }
         .card { background: var(--card); border: 1px solid #1f2937; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         h2 { font-size: 0.9rem; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 12px; }
-
-        /* Copy & Lot Box */
-        .lot-container { text-align: center; padding: 20px; background: #030712; border-radius: 12px; margin: 15px 0; border: 1px dashed #334155; position: relative; }
-        .lot-val { font-size: 3.5rem; font-weight: 900; color: #fff; margin-bottom: 10px; }
-        .copy-btn { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; transition: 0.2s; }
-        .copy-btn:hover { background: var(--accent); color: #000; }
-
-        /* Elements */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .lot-container { text-align: center; padding: 20px; background: #030712; border-radius: 12px; margin: 15px 0; border: 1px dashed #334155; }
+        .lot-val { font-size: 3.5rem; font-weight: 900; color: #fff; }
+        .copy-btn { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; }
-        
-        /* Psychology Tags */
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .tag { background: #1f2937; border: 1px solid #374151; color: #94a3b8; padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+        .tag { background: #1f2937; color: #94a3b8; padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; display: inline-block; margin: 2px; }
         .tag.selected { background: var(--accent); color: #000; font-weight: bold; }
-
-        /* Terminal */
-        .terminal { background: #000; border: 1px solid #334155; padding: 12px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: #00ff88; height: 110px; overflow-y: auto; margin-top: auto; }
-        .t-line::before { content: ">> "; color: var(--accent); }
+        .terminal { background: #000; border: 1px solid #334155; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 0.75rem; color: #00ff88; height: 100px; overflow-y: auto; margin-top: auto; }
+        .acc-item { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #1e293b; }
+        .del-btn { color: var(--loss); cursor: pointer; font-weight: bold; padding: 5px; }
     </style>
 </head>
 <body>
-
     <div class="sidebar">
         <h2 style="border:none; text-align:center; padding:0; margin-bottom:30px;">KUAD ELITE</h2>
         <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
@@ -53,134 +36,95 @@
         <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
         <div class="nav-item" onclick="showSec('history')">HISTORY</div>
     </div>
-
     <div class="main">
-        <div class="acc-display">
-            <div>
-                <select id="acc-select" onchange="switchAcc()" style="margin:0; background:transparent; border:none; font-weight:bold; font-size:1.1rem; cursor:pointer; width:auto;"></select>
-            </div>
-            <div id="top-bal" style="font-size:1.4rem; font-weight:900;">$0.00</div>
-        </div>
-
         <div id="dash" class="section active">
             <div class="card">
-                <h2>Execution Engine</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>Active Account</h2>
+                    <select id="acc-select" onchange="switchAcc()" style="width:auto; margin:0; border:none; background:transparent; font-weight:bold; color:var(--accent);"></select>
+                </div>
                 <div class="grid">
-                    <div><label style="font-size:0.7rem; color:#64748b;">STOP LOSS (PIPS)</label><input type="number" id="sl" placeholder="15"></div>
-                    <div><label style="font-size:0.7rem; color:#64748b;">RISK %</label><input type="number" id="risk" value="1"></div>
+                    <div style="background:#030712; padding:15px; border-radius:10px;">
+                        <label style="font-size:0.7rem; color:#64748b;">CURRENT BALANCE</label>
+                        <div id="top-bal" style="font-size:1.5rem; font-weight:900;">$0.00</div>
+                    </div>
+                    <div style="background:#030712; padding:15px; border-radius:10px;">
+                        <label style="font-size:0.7rem; color:#64748b;">GOAL TARGET</label>
+                        <div id="top-target" style="font-size:1.5rem; font-weight:900; color:var(--win);">$0.00</div>
+                    </div>
                 </div>
-                <div class="lot-container">
-                    <div class="lot-val" id="lot-res">0.00</div>
-                    <div class="copy-btn" onclick="copyLot()">COPY LOT SIZE</div>
+            </div>
+            <div class="card">
+                <h2>Lot Calculator</h2>
+                <div class="grid">
+                    <input type="number" id="sl" placeholder="Stop Loss (Pips)">
+                    <input type="number" id="risk" value="1" placeholder="Risk %">
                 </div>
-                <button class="primary" onclick="calc()">CALCULATE POSITION</button>
+                <div class="lot-container"><div class="lot-val" id="lot-res">0.00</div><div class="copy-btn" onclick="copyLot()">COPY LOT</div></div>
+                <button class="primary" onclick="calc()">CALCULATE</button>
             </div>
         </div>
-
         <div id="accounts" class="section">
             <div class="card">
-                <h2>New Account Setup</h2>
-                <input type="text" id="a-name" placeholder="Account Name (e.g. 50K Prop)">
-                <input type="number" id="a-bal" placeholder="Current Balance">
-                <button class="primary" onclick="newAcc()">CREATE ACCOUNT</button>
+                <h2>Create New Account</h2>
+                <input type="text" id="a-name" placeholder="Account Name (e.g. 100K Evaluation)">
+                <div class="grid">
+                    <input type="number" id="a-bal" placeholder="Start Balance ($)">
+                    <input type="number" id="a-target" placeholder="Target Profit ($)">
+                </div>
+                <button class="primary" onclick="newAcc()">CREATE</button>
             </div>
+            <div id="acc-list-manage"></div>
         </div>
-
         <div id="journal" class="section">
             <div class="card">
                 <h2>Log Trade</h2>
                 <div class="grid">
                     <select id="p-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
-                    <select id="p-out"><option value="WIN">WIN (TP)</option><option value="LOSS">LOSS (SL)</option><option value="BE">BREAK-EVEN</option></select>
+                    <select id="p-session"><option>London</option><option>New York</option><option>Asia</option></select>
+                </div>
+                <div class="grid">
+                    <select id="p-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                    <select id="p-out"><option value="WIN">WIN</option><option value="LOSS">LOSS</option><option value="BE">BREAK-EVEN</option></select>
                 </div>
                 <input type="number" id="p-pnl" placeholder="Profit/Loss Amount ($)">
-                <div class="tags">
-                    <div class="tag" onclick="this.classList.toggle('selected')">Rules Followed</div>
-                    <div class="tag" onclick="this.classList.toggle('selected')">FOMO</div>
-                    <div class="tag" onclick="this.classList.toggle('selected')">Early Exit</div>
-                </div>
-                <button class="primary" onclick="logTrade()">SAVE & UPDATE</button>
+                <div id="tags-area"><div class="tag" onclick="this.classList.toggle('selected')">Rules Followed</div><div class="tag" onclick="this.classList.toggle('selected')">FOMO</div><div class="tag" onclick="this.classList.toggle('selected')">Early Exit</div></div>
+                <button class="primary" onclick="logTrade()">SAVE TRADE</button>
             </div>
         </div>
-
-        <div id="history" class="section">
-            <div id="hist-list"></div>
-        </div>
-
-        <div class="terminal" id="term">
-            <div class="t-line">Elite Terminal v9.0 Online... Ready to trade.</div>
-        </div>
+        <div id="history" class="section"><div id="hist-list"></div></div>
+        <div class="terminal" id="term"><div class="t-line">System Online v10.0... Ready.</div></div>
     </div>
-
 <script>
-    let data = JSON.parse(localStorage.getItem('kuad_v9')) || { accs: [], active: -1, logs: [] };
-
-    function term(msg) {
-        const t = document.getElementById('term');
-        t.innerHTML += `<div class="t-line">${msg}</div>`;
-        t.scrollTop = t.scrollHeight;
-    }
-
-    function showSec(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
-
+    let data = JSON.parse(localStorage.getItem('kuad_v10')) || { accs: [], active: -1, logs: [] };
+    function term(msg) { const t = document.getElementById('term'); t.innerHTML += `<div class="t-line">> ${msg}</div>`; t.scrollTop = t.scrollHeight; }
+    function showSec(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); event.currentTarget.classList.add('active'); }
     function newAcc() {
-        const n = document.getElementById('a-name').value, b = parseFloat(document.getElementById('a-bal').value);
-        if(n && b) {
-            data.accs.push({name: n, bal: b});
-            if(data.active === -1) data.active = 0;
-            save(); location.reload();
-        }
+        const n = document.getElementById('a-name').value, b = parseFloat(document.getElementById('a-bal').value), t = parseFloat(document.getElementById('a-target').value);
+        if(n && b && t) { data.accs.push({name: n, bal: b, target: t}); if(data.active === -1) data.active = 0; save(); location.reload(); }
     }
-
-    function switchAcc() {
-        data.active = document.getElementById('acc-select').selectedIndex;
-        save(); update();
-        term(`Switched Account: ${data.accs[data.active].name}`);
-    }
-
+    function deleteAcc(index) { if(confirm("Account delete karein?")) { data.accs.splice(index, 1); if(data.active >= data.accs.length) data.active = data.accs.length - 1; save(); location.reload(); }}
+    function switchAcc() { data.active = document.getElementById('acc-select').selectedIndex; save(); update(); term(`Switched: ${data.accs[data.active].name}`); }
     function calc() {
-        const acc = data.accs[data.active];
-        const s = document.getElementById('sl').value, r = document.getElementById('risk').value;
-        if(acc && s) {
-            const lot = (acc.bal * (r/100)) / (s * 10);
-            document.getElementById('lot-res').innerText = lot.toFixed(2);
-            term(`Calculated: ${lot.toFixed(2)} Lots`);
-        }
+        const acc = data.accs[data.active]; const s = document.getElementById('sl').value, r = document.getElementById('risk').value;
+        if(acc && s) { const lot = (acc.bal * (r/100)) / (s * 10); document.getElementById('lot-res').innerText = lot.toFixed(2); term(`Lot: ${lot.toFixed(2)}`); }
     }
-
-    function copyLot() {
-        const lot = document.getElementById('lot-res').innerText;
-        navigator.clipboard.writeText(lot);
-        term(`Copied ${lot} to clipboard!`);
-        alert("Copied!");
-    }
-
+    function copyLot() { const lot = document.getElementById('lot-res').innerText; navigator.clipboard.writeText(lot); term(`Copied ${lot}`); alert("Copied!"); }
     function logTrade() {
-        const val = parseFloat(document.getElementById('p-pnl').value);
-        if(data.active !== -1 && !isNaN(val)) {
-            data.accs[data.active].bal += val;
-            data.logs.unshift({acc: data.accs[data.active].name, pair: document.getElementById('p-pair').value, pnl: val, date: new Date().toLocaleDateString()});
-            save(); update();
-            term(`Trade Saved: ${val > 0 ? '+' : ''}${val}$`);
-        }
+        const val = parseFloat(document.getElementById('p-pnl').value); if(data.active === -1 || isNaN(val)) return;
+        data.accs[data.active].bal += val;
+        data.logs.unshift({acc: data.accs[data.active].name, pair: document.getElementById('p-pair').value, pnl: val, day: document.getElementById('p-day').value, session: document.getElementById('p-session').value, date: new Date().toLocaleDateString()});
+        save(); update(); term(`Logged: ${val}$ on ${document.getElementById('p-day').value}`);
     }
-
     function update() {
-        const sel = document.getElementById('acc-select');
-        sel.innerHTML = data.accs.map(a => `<option>${a.name}</option>`).join('');
-        sel.selectedIndex = data.active;
+        const sel = document.getElementById('acc-select'); sel.innerHTML = data.accs.map(a => `<option>${a.name}</option>`).join(''); sel.selectedIndex = data.active;
         if(data.active !== -1) {
-            document.getElementById('top-bal').innerText = `$${data.accs[data.active].bal.toLocaleString()}`;
+            const a = data.accs[data.active]; document.getElementById('top-bal').innerText = `$${a.bal.toLocaleString()}`; document.getElementById('top-target').innerText = `$${a.target.toLocaleString()}`;
         }
-        document.getElementById('hist-list').innerHTML = data.logs.map(l => `<div style="background:#0f172a; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #334155;"><b>${l.pair}</b>: ${l.pnl}$ (${l.date})</div>`).join('');
+        document.getElementById('acc-list-manage').innerHTML = data.accs.map((a, i) => `<div class="acc-item"><span>${a.name} ($${a.bal})</span><span class="del-btn" onclick="deleteAcc(${i})">DELETE</span></div>`).join('');
+        document.getElementById('hist-list').innerHTML = data.logs.filter(l => l.acc === data.accs[data.active]?.name).map(l => `<div style="background:#0f172a; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid ${l.pnl >=0 ? '#10b981' : '#ef4444'};"><b>${l.pair}</b> | ${l.session} | ${l.day}<br><small>${l.pnl}$ (${l.date})</small></div>`).join('');
     }
-
-    function save() { localStorage.setItem('kuad_v9', JSON.stringify(data)); }
+    function save() { localStorage.setItem('kuad_v10', JSON.stringify(data)); }
     update();
 </script>
 </body>
