@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | ANALYTICS PRO</title>
+    <title>KUAD ELITE | FULL ANALYTICS</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -10,7 +10,7 @@
         .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.85rem; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
         .main { flex: 1; padding: 25px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; max-width: 900px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
+        .section { display: none; max-width: 1000px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -21,17 +21,19 @@
         .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
-        
-        /* Analytics Cards */
-        .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-        .ana-card { background: linear-gradient(145deg, #0f172a, #111827); border: 1px solid #1e293b; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
 
-        .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 10px 0; }
+        /* Performance Table */
+        .ana-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; }
+        .ana-table th { text-align: left; color: #64748b; padding: 10px; border-bottom: 1px solid #1e293b; text-transform: uppercase; font-size: 0.65rem; }
+        .ana-table td { padding: 12px 10px; border-bottom: 1px solid #0f172a; }
+        .win-text { color: var(--win); font-weight: bold; }
+        
+        .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 15px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
 
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
@@ -51,23 +53,28 @@
                     <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold; cursor:pointer;"></select>
                 </div>
                 <div class="grid-4">
-                    <div class="stat-box"><span class="stat-label">Current Bal</span><div id="d-cur" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Balance</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
-                    <div class="stat-box"><span class="stat-label">Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
+                    <div class="stat-box"><span class="stat-label">Total Win Rate</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
                 </div>
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
-                
-                <div class="analytics-grid">
-                    <div class="ana-card">
-                        <span class="stat-label">Best Trading Session</span>
-                        <div id="best-session" class="stat-val" style="color:var(--win)">-</div>
-                    </div>
-                    <div class="ana-card">
-                        <span class="stat-label">Most Profitable Day</span>
-                        <div id="best-day" class="stat-val" style="color:var(--win)">-</div>
-                    </div>
-                </div>
+            </div>
+
+            <div class="card">
+                <h2>Session Performance</h2>
+                <table class="ana-table" id="session-table">
+                    <thead><tr><th>Session</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
+                    <tbody id="session-body"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h2>Weekly Performance (Day-wise)</h2>
+                <table class="ana-table" id="day-table">
+                    <thead><tr><th>Day</th><th>Trades</th><th>Win Rate</th><th>Net P/L</th></tr></thead>
+                    <tbody id="day-body"></tbody>
+                </table>
             </div>
         </div>
 
@@ -86,7 +93,7 @@
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Journal Entry (Syncs All Data)</h2>
+                <h2>Journal Entry</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
@@ -117,7 +124,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'KUAD_ELITE_FINAL_MASTER_V20';
+    const DB_KEY = 'KUAD_ELITE_DATA_FINAL_V21';
     let db = JSON.parse(localStorage.getItem(DB_KEY)) || { accs: [], active: -1, logs: [] };
 
     function showSec(id) {
@@ -143,19 +150,14 @@
         if(db.active === -1) return;
         const pnl = parseFloat(document.getElementById('j-pnl').value);
         if(isNaN(pnl)) return;
-
         db.accs[db.active].current += pnl;
-        const entry = { 
-            acc: db.accs[db.active].name, 
-            pnl, 
+        db.logs.unshift({ 
+            acc: db.accs[db.active].name, pnl, 
             pair: document.getElementById('j-pair').value, 
             session: document.getElementById('j-session').value, 
-            day: document.getElementById('j-day').value,
-            date: new Date().toLocaleDateString() 
-        };
-        db.logs.unshift(entry);
+            day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() 
+        });
         save(); updateUI();
-        alert("Data Synchronized!");
     }
 
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
@@ -175,37 +177,37 @@
             const diff = a.target - a.current;
             document.getElementById('d-rem').innerText = diff <= 0 ? "DONE 🚀" : `$${diff.toFixed(0)}`;
 
-            // Win Rate
             const wins = accLogs.filter(l => l.pnl > 0).length;
             const wr = accLogs.length > 0 ? (wins / accLogs.length) * 100 : 0;
             document.getElementById('d-wr').innerText = Math.round(wr) + '%';
 
-            // Progress Bar
             let progress = ((a.current - a.start) / (a.target - a.start)) * 100;
-            progress = Math.max(0, Math.min(100, progress));
-            document.getElementById('p-bar').style.width = progress + '%';
+            document.getElementById('p-bar').style.width = Math.max(0, Math.min(100, progress)) + '%';
 
-            // Analytics: Best Session & Day
-            if(accLogs.length > 0) {
-                const getBest = (key) => {
-                    const counts = {};
-                    accLogs.filter(l => l.pnl > 0).forEach(l => { counts[l[key]] = (counts[l[key]] || 0) + 1; });
-                    return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, "-");
-                };
-                document.getElementById('best-session').innerText = getBest('session');
-                document.getElementById('best-day').innerText = getBest('day');
-            }
+            // GENERATE TABLES
+            const generateTable = (key, list) => {
+                const stats = {};
+                list.forEach(val => stats[val] = { t:0, w:0, pnl:0 });
+                accLogs.forEach(l => {
+                    if(stats[l[key]]) {
+                        stats[l[key]].t++;
+                        if(l.pnl > 0) stats[l[key]].w++;
+                        stats[l[key]].pnl += l.pnl;
+                    }
+                });
+                return list.map(v => {
+                    const s = stats[v] || { t:0, w:0, pnl:0 };
+                    const winRate = s.t > 0 ? Math.round((s.w / s.t) * 100) : 0;
+                    return `<tr><td>${v}</td><td>${s.t}</td><td class="win-text">${winRate}%</td><td style="color:${s.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${s.pnl >=0 ? '+' : ''}${s.pnl}$</td></tr>`;
+                }).join('');
+            };
 
-            // History
-            document.getElementById('journal-history').innerHTML = accLogs.map(l => `
-                <div class="log-item"><span><b>${l.pair}</b> | ${l.session} | ${l.day}</span>
-                <span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
+            document.getElementById('session-body').innerHTML = generateTable('session', ['London', 'New York', 'Asia']);
+            document.getElementById('day-body').innerHTML = generateTable('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+
+            document.getElementById('journal-history').innerHTML = accLogs.map(l => `<div class="log-item"><span><b>${l.pair}</b> | ${l.session} | ${l.day}</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
         }
-        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `
-            <div class="log-item"><span>${a.name}</span><div>
-            <button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">EDIT</button>
-            <button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">DEL</button>
-            </div></div>`).join('');
+        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="log-item"><span>${a.name}</span><div><button onclick="editAcc(${i})" style="background:var(--accent); color:#000; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">EDIT</button><button onclick="delAcc(${i})" style="background:var(--loss); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">DEL</button></div></div>`).join('');
     }
 
     function editAcc(i) {
@@ -226,7 +228,6 @@
             alert("Lot Copied!");
         }
     }
-
     function delAcc(i) { if(confirm("Delete Account?")) { db.accs.splice(i,1); db.active = 0; save(); location.reload(); } }
     updateUI();
 </script>
