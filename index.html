@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | FIXED TERMINAL</title>
+    <title>KUAD ELITE | PROGRESS TERMINAL</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -15,15 +15,21 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .card { background: var(--card); border: 1px solid #1f2937; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         h2 { font-size: 0.9rem; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 12px; }
-        .lot-container { text-align: center; padding: 20px; background: #030712; border-radius: 12px; margin: 15px 0; border: 1px dashed #334155; }
-        .lot-val { font-size: 3.5rem; font-weight: 900; color: #fff; }
-        .copy-btn { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        /* Stats Grid */
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: #030712; padding: 15px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
+        .stat-label { font-size: 0.65rem; color: #64748b; display: block; margin-bottom: 5px; }
+        .stat-val { font-size: 1.1rem; font-weight: 800; color: #fff; }
+
+        /* Progress Bar */
+        .progress-container { background: #030712; height: 10px; border-radius: 5px; margin: 20px 0; overflow: hidden; border: 1px solid #1e293b; }
+        .progress-bar { background: linear-gradient(90deg, var(--accent), var(--win)); height: 100%; width: 0%; transition: 1s ease-in-out; }
+
         input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; }
-        .terminal { background: #000; border: 1px solid #334155; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 0.75rem; color: #00ff88; height: 100px; overflow-y: auto; margin-top: auto; }
         .acc-item { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #1e293b; }
-        .del-btn { color: var(--loss); cursor: pointer; font-weight: bold; padding: 5px; }
+        .del-btn { color: var(--loss); cursor: pointer; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -37,91 +43,112 @@
     <div class="main">
         <div id="dash" class="section active">
             <div class="card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2>Active Account</h2>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h2>Terminal Stats</h2>
                     <select id="acc-select" onchange="switchAcc()" style="width:auto; margin:0; border:none; background:transparent; font-weight:bold; color:var(--accent);"></select>
                 </div>
-                <div class="grid">
-                    <div style="background:#030712; padding:15px; border-radius:10px;">
-                        <label style="font-size:0.7rem; color:#64748b;">CURRENT BALANCE</label>
-                        <div id="top-bal" style="font-size:1.5rem; font-weight:900;">$0.00</div>
-                    </div>
-                    <div style="background:#030712; padding:15px; border-radius:10px;">
-                        <label style="font-size:0.7rem; color:#64748b;">GOAL TARGET</label>
-                        <div id="top-target" style="font-size:1.5rem; font-weight:900; color:var(--win);">$0.00</div>
-                    </div>
+                <div class="grid-4">
+                    <div class="stat-box"><span class="stat-label">START</span><div id="st-bal" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">CURRENT</span><div id="cur-bal" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">TARGET</span><div id="trg-bal" class="stat-val" style="color:var(--accent)">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">REMAINING</span><div id="rem-bal" class="stat-val" style="color:var(--win)">$0</div></div>
                 </div>
+                <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
+                <div style="text-align:right; font-size:0.7rem; color:#64748b;">PROGRESS: <span id="p-text" style="color:var(--win)">0%</span></div>
             </div>
             <div class="card">
-                <h2>Lot Calculator</h2>
-                <div class="grid">
-                    <input type="number" id="sl" placeholder="Stop Loss (Pips)">
-                    <input type="number" id="risk" value="1" placeholder="Risk %">
+                <h2>Quick Calculator</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <input type="number" id="sl" placeholder="SL Pips">
+                    <input type="number" id="risk" value="1">
                 </div>
-                <div class="lot-container"><div class="lot-val" id="lot-res">0.00</div><div class="copy-btn" onclick="copyLot()">COPY LOT</div></div>
+                <div style="text-align:center; font-size:3rem; font-weight:900; margin:10px 0;">
+                    <span id="lot-res">0.00</span>
+                    <span style="font-size:0.7rem; color:var(--accent); cursor:pointer; border:1px solid; padding:2px 8px; border-radius:10px;" onclick="copyLot()">COPY</span>
+                </div>
                 <button class="primary" onclick="calc()">CALCULATE</button>
             </div>
         </div>
+
         <div id="accounts" class="section">
             <div class="card">
-                <h2>Create New Account</h2>
-                <input type="text" id="a-name" placeholder="Account Name">
-                <div class="grid">
-                    <input type="number" id="a-bal" placeholder="Current Balance ($)">
-                    <input type="number" id="a-target" placeholder="Target Profit ($)">
+                <h2>Account Management</h2>
+                <input type="text" id="a-name" placeholder="Account Name (e.g. 50K Prop)">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                    <input type="number" id="a-st" placeholder="Start Bal">
+                    <input type="number" id="a-cur" placeholder="Current Bal">
+                    <input type="number" id="a-trg" placeholder="Target Bal">
                 </div>
-                <button class="primary" onclick="newAcc()">CREATE</button>
+                <button class="primary" onclick="newAcc()">INITIALIZE ACCOUNT</button>
             </div>
             <div id="acc-list-manage"></div>
         </div>
+
         <div id="journal" class="section">
             <div class="card">
-                <h2>Log Trade</h2>
-                <div class="grid">
+                <h2>Entry Protocol</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
                     <select id="p-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="p-session"><option>London</option><option>New York</option><option>Asia</option></select>
                 </div>
-                <div class="grid">
-                    <select id="p-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <select id="p-out"><option value="WIN">WIN</option><option value="LOSS">LOSS</option><option value="BE">BREAK-EVEN</option></select>
-                </div>
-                <input type="number" id="p-pnl" placeholder="Profit/Loss Amount ($) (Loss ke liye - lagayein)">
-                <button class="primary" onclick="logTrade()">SAVE TRADE</button>
+                <input type="number" id="p-pnl" placeholder="Profit/Loss Amount ($)">
+                <button class="primary" onclick="logTrade()">COMMIT TRADE</button>
             </div>
         </div>
+
         <div id="history" class="section"><div id="hist-list"></div></div>
-        <div class="terminal" id="term"><div class="t-line">v11.0 System Ready... Balance logic fixed.</div></div>
     </div>
 <script>
-    let data = JSON.parse(localStorage.getItem('kuad_v11')) || { accs: [], active: -1, logs: [] };
-    function term(msg) { const t = document.getElementById('term'); t.innerHTML += `<div class="t-line">> ${msg}</div>`; t.scrollTop = t.scrollHeight; }
+    let db = JSON.parse(localStorage.getItem('kuad_v12')) || { accs: [], active: -1, logs: [] };
     function showSec(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); event.currentTarget.classList.add('active'); }
+    
     function newAcc() {
-        const n = document.getElementById('a-name').value, b = parseFloat(document.getElementById('a-bal').value), t = parseFloat(document.getElementById('a-target').value);
-        if(n && !isNaN(b) && !isNaN(t)) { data.accs.push({name: n, bal: b, target: t}); if(data.active === -1) data.active = 0; save(); location.reload(); }
-    }
-    function deleteAcc(index) { if(confirm("Account delete karein?")) { data.accs.splice(index, 1); if(data.active >= data.accs.length) data.active = data.accs.length - 1; save(); location.reload(); }}
-    function switchAcc() { data.active = document.getElementById('acc-select').selectedIndex; save(); update(); term(`Switched: ${data.accs[data.active].name}`); }
-    function calc() {
-        const acc = data.accs[data.active]; const s = document.getElementById('sl').value, r = document.getElementById('risk').value;
-        if(acc && s) { const lot = (acc.bal * (r/100)) / (s * 10); document.getElementById('lot-res').innerText = lot.toFixed(2); term(`Lot: ${lot.toFixed(2)}`); }
-    }
-    function copyLot() { const lot = document.getElementById('lot-res').innerText; navigator.clipboard.writeText(lot); term(`Copied ${lot}`); alert("Copied!"); }
-    function logTrade() {
-        const val = parseFloat(document.getElementById('p-pnl').value); if(data.active === -1 || isNaN(val)) return;
-        data.accs[data.active].bal += val; // Fixed logic: positive adds, negative subtracts
-        data.logs.unshift({acc: data.accs[data.active].name, pair: document.getElementById('p-pair').value, pnl: val, day: document.getElementById('p-day').value, session: document.getElementById('p-session').value, date: new Date().toLocaleDateString()});
-        save(); update(); term(`Logged: ${val}$ | New Bal: ${data.accs[data.active].bal}$`);
-    }
-    function update() {
-        const sel = document.getElementById('acc-select'); sel.innerHTML = data.accs.map(a => `<option>${a.name}</option>`).join(''); sel.selectedIndex = data.active;
-        if(data.active !== -1) {
-            const a = data.accs[data.active]; document.getElementById('top-bal').innerText = `$${a.bal.toLocaleString()}`; document.getElementById('top-target').innerText = `$${a.target.toLocaleString()}`;
+        const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value);
+        if(n && !isNaN(st) && !isNaN(cur)) {
+            db.accs.push({name: n, start: st, current: cur, target: trg});
+            if(db.active === -1) db.active = 0;
+            save(); location.reload();
         }
-        document.getElementById('acc-list-manage').innerHTML = data.accs.map((a, i) => `<div class="acc-item"><span>${a.name} ($${a.bal})</span><span class="del-btn" onclick="deleteAcc(${i})">DELETE</span></div>`).join('');
-        document.getElementById('hist-list').innerHTML = data.logs.filter(l => l.acc === data.accs[data.active]?.name).map(l => `<div style="background:#0f172a; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid ${l.pnl >=0 ? '#10b981' : '#ef4444'};"><b>${l.pair}</b> | ${l.session} | ${l.day}<br><small>${l.pnl >= 0 ? '+' : ''}${l.pnl}$ (${l.date})</small></div>`).join('');
     }
-    function save() { localStorage.setItem('kuad_v11', JSON.stringify(data)); }
+
+    function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); update(); }
+    
+    function logTrade() {
+        const val = parseFloat(document.getElementById('p-pnl').value); if(db.active === -1 || isNaN(val)) return;
+        db.accs[db.active].current += val;
+        db.logs.unshift({acc: db.accs[db.active].name, pair: document.getElementById('p-pair').value, pnl: val, date: new Date().toLocaleDateString()});
+        save(); update(); alert("Log Synchronized!");
+    }
+
+    function update() {
+        const sel = document.getElementById('acc-select'); sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join(''); sel.selectedIndex = db.active;
+        if(db.active !== -1) {
+            const a = db.accs[db.active];
+            document.getElementById('st-bal').innerText = `$${a.start.toLocaleString()}`;
+            document.getElementById('cur-bal').innerText = `$${a.current.toLocaleString()}`;
+            document.getElementById('trg-bal').innerText = `$${a.target.toLocaleString()}`;
+            const rem = a.target - a.current;
+            document.getElementById('rem-bal').innerText = `$${rem.toLocaleString()}`;
+            
+            // Progress Logic
+            const totalToGet = a.target - a.start;
+            const currentGained = a.current - a.start;
+            let percent = (currentGained / totalToGet) * 100;
+            if(percent < 0) percent = 0; if(percent > 100) percent = 100;
+            document.getElementById('p-bar').style.width = percent + '%';
+            document.getElementById('p-text').innerText = Math.round(percent) + '%';
+        }
+        document.getElementById('acc-list-manage').innerHTML = db.accs.map((a, i) => `<div class="acc-item"><span>${a.name}</span><span class="del-btn" onclick="delAcc(${i})">DELETE</span></div>`).join('');
+        document.getElementById('hist-list').innerHTML = db.logs.filter(l => l.acc === db.accs[db.active]?.name).map(l => `<div style="background:#0f172a; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid ${l.pnl >=0 ? '#10b981' : '#ef4444'};"><b>${l.pair}</b> | ${l.pnl >= 0 ? '+' : ''}${l.pnl}$ <small>(${l.date})</small></div>`).join('');
+    }
+
+    function calc() {
+        const acc = db.accs[db.active]; const s = document.getElementById('sl').value, r = document.getElementById('risk').value;
+        if(acc && s) { const lot = (acc.current * (r/100)) / (s * 10); document.getElementById('lot-res').innerText = lot.toFixed(2); }
+    }
+    function copyLot() { navigator.clipboard.writeText(document.getElementById('lot-res').innerText); alert("Copied!"); }
+    function delAcc(i) { if(confirm("Delete?")) { db.accs.splice(i,1); db.active = 0; save(); location.reload(); } }
+    function save() { localStorage.setItem('kuad_v12', JSON.stringify(db)); }
     update();
 </script>
 </body>
