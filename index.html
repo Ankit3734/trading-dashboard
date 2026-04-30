@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | PRECISION V28</title>
+    <title>KUAD ELITE | ULTIMATE ANALYTICS</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -10,7 +10,7 @@
         .nav-item { padding: 10px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.8rem; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
         .main { flex: 1; padding: 20px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; max-width: 950px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
+        .section { display: none; max-width: 1000px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .card { background: var(--card); border: 1px solid #1f2937; padding: 18px; border-radius: 12px; margin-bottom: 15px; }
@@ -21,13 +21,12 @@
         .stat-val { font-size: 0.9rem; font-weight: 800; color: #fff; }
         .progress-container { background: #030712; height: 8px; border-radius: 4px; border: 1px solid #1e293b; overflow: hidden; margin: 10px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
-        .ana-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
-        .ana-table th { text-align: left; color: #64748b; padding: 6px; border-bottom: 1px solid #1e293b; }
+        .ana-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; margin-bottom: 10px; }
+        .ana-table th { text-align: left; color: #64748b; padding: 6px; border-bottom: 1px solid #1e293b; text-transform: uppercase; }
         .ana-table td { padding: 8px 6px; border-bottom: 1px solid #0f172a; }
-        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 10px; border-radius: 6px; outline: none; margin-bottom: 8px; font-size: 0.8rem; }
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 10px; border-radius: 6px; outline: none; margin-bottom: 8px; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 0.75rem; }
         .log-row { background: #0d1117; padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #1f2937; display: flex; justify-content: space-between; align-items: center; }
-        .basis-tag { font-size: 0.6rem; color: var(--accent); background: rgba(0,210,255,0.1); padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -48,23 +47,34 @@
                     <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold;"></select>
                 </div>
                 <div class="grid-4">
-                    <div class="stat-box"><span class="stat-label">Bal</span><div id="d-cur" class="stat-val">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Balance</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Win%</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
-                    <div class="stat-box"><span class="stat-label">Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
                 </div>
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
-                <div id="p-text" style="text-align:right; font-size:0.6rem; color:var(--accent);">0%</div>
+                <div id="p-text" style="text-align:right; font-size:0.6rem; color:var(--accent); font-weight:bold;">0% Completed</div>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                <div class="card"><h2>Weekly</h2><table class="ana-table"><tbody id="day-ana"></tbody></table></div>
-                <div class="card"><h2>Strategy</h2><table class="ana-table"><tbody id="strat-ana"></tbody></table></div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px;">
+                <div class="card">
+                    <h2>Day Stats (%)</h2>
+                    <table class="ana-table"><tbody id="day-ana"></tbody></table>
+                </div>
+                <div class="card">
+                    <h2>Session Stats (%)</h2>
+                    <table class="ana-table"><tbody id="sess-ana"></tbody></table>
+                </div>
+                <div class="card">
+                    <h2>Pair Stats (%)</h2>
+                    <table class="ana-table"><tbody id="pair-ana"></tbody></table>
+                </div>
             </div>
         </div>
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>New Entry</h2>
+                <h2>Log Entry</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
@@ -76,23 +86,16 @@
                     <input type="number" id="j-pnl" placeholder="Amount ($)">
                 </div>
                 <select id="j-basis">
-                    <option value="" disabled selected>Select Trade Basis</option>
-                    <option value="Session Entry">Session Entry</option>
-                    <option value="IDM Sweep">IDM Sweep</option>
-                    <option value="Order Block">Order Block</option>
-                    <option value="Breakout">Breakout</option>
+                    <option value="" disabled selected>Select Basis</option>
+                    <option>Session Entry</option><option>IDM Sweep</option><option>Order Block</option><option>Breakout</option>
                 </select>
-                <button class="primary" onclick="logTrade()">Save to Logs</button>
+                <button class="primary" onclick="logTrade()">Save Data</button>
             </div>
         </div>
 
         <div id="logs" class="section">
             <div class="card">
-                <h2>Log Analytics</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
-                    <div class="stat-box"><span class="stat-label">Best Pair</span><div id="log-best-pair" class="stat-val">-</div></div>
-                    <div class="stat-box"><span class="stat-label">Best Session</span><div id="log-best-sess" class="stat-val">-</div></div>
-                </div>
+                <h2>Detailed History</h2>
                 <div id="full-history"></div>
             </div>
         </div>
@@ -105,9 +108,9 @@
                     <input type="number" id="c-risk" placeholder="Risk%">
                 </div>
                 <input type="number" id="c-sl" placeholder="SL Pips">
-                <div style="text-align:center; padding:15px 0;">
-                    <div style="font-size:0.6rem; color:#64748b; text-transform:uppercase;">Recommended Lot</div>
-                    <div style="font-size:1.8rem; font-weight:900; color:var(--accent);" id="lot-res">0.00</div>
+                <div style="text-align:center; padding:10px 0;">
+                    <div style="font-size:0.5rem; color:#64748b;">LOT SIZE</div>
+                    <div style="font-size:1.5rem; font-weight:900; color:var(--accent);" id="lot-res">0.00</div>
                 </div>
                 <button class="primary" onclick="runCalc()">Calculate & Copy</button>
             </div>
@@ -117,11 +120,11 @@
             <div class="card">
                 <h2 id="form-title">Accounts</h2>
                 <input type="hidden" id="edit-idx" value="-1">
-                <input type="text" id="a-name" placeholder="Name">
+                <input type="text" id="a-name" placeholder="Account Name">
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <input type="number" id="a-st" placeholder="Start"><input type="number" id="a-cur" placeholder="Current"><input type="number" id="a-trg" placeholder="Target">
                 </div>
-                <button class="primary" onclick="handleAcc()">Save</button>
+                <button class="primary" onclick="handleAcc()">Save Account</button>
             </div>
             <div id="acc-list"></div>
         </div>
@@ -143,72 +146,52 @@
         if(db.active === -1) return;
         let pnl = parseFloat(document.getElementById('j-pnl').value);
         const res = document.getElementById('j-res').value;
-        const basis = document.getElementById('j-basis').value || "No Setup";
         if(isNaN(pnl)) return;
         pnl = (res === 'loss') ? -Math.abs(pnl) : Math.abs(pnl);
-
         db.accs[db.active].current += pnl;
         db.logs.unshift({ 
-            acc: db.accs[db.active].name, pnl, basis,
-            pair: document.getElementById('j-pair').value, 
-            session: document.getElementById('j-session').value, 
-            type: document.getElementById('j-type').value,
-            day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() 
+            acc: db.accs[db.active].name, pnl, basis: document.getElementById('j-basis').value,
+            pair: document.getElementById('j-pair').value, session: document.getElementById('j-session').value, 
+            type: document.getElementById('j-type').value, day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() 
         });
-        save(); updateUI();
-        document.getElementById('j-pnl').value = '';
+        save(); updateUI(); document.getElementById('j-pnl').value = '';
     }
 
     function updateUI() {
         const sel = document.getElementById('acc-select');
         sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
         sel.selectedIndex = db.active;
-
         if(db.active !== -1) {
             const a = db.accs[db.active];
             const accLogs = db.logs.filter(l => l.acc === a.name);
             document.getElementById('d-cur').innerText = `$${a.current.toFixed(0)}`;
             document.getElementById('d-trg').innerText = `$${a.target}`;
-            const diff = a.target - a.current;
-            document.getElementById('d-rem').innerText = diff <= 0 ? "DONE" : `$${diff.toFixed(0)}`;
+            const rem = a.target - a.current;
+            document.getElementById('d-rem').innerText = rem <= 0 ? "DONE" : `$${rem.toFixed(0)}`;
             const wins = accLogs.filter(l => l.pnl > 0).length;
-            document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins / accLogs.length) * 100) + '%' : '0%';
+            document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins/accLogs.length)*100)+'%' : '0%';
+            let prog = Math.max(0, Math.min(100, ((a.current - a.start)/(a.target - a.start))*100));
+            document.getElementById('p-bar').style.width = prog+'%';
+            document.getElementById('p-text').innerText = Math.round(prog)+'%';
 
-            let prog = ((a.current - a.start) / (a.target - a.start)) * 100;
-            prog = Math.max(0, Math.min(100, prog));
-            document.getElementById('p-bar').style.width = prog + '%';
-            document.getElementById('p-text').innerText = Math.round(prog) + '%';
-
-            const getAna = (key, list) => {
-                return list.map(val => {
-                    const filtered = accLogs.filter(l => l[key] === val);
-                    if(filtered.length === 0) return `<tr><td>${val}</td><td>0%</td><td>0$</td></tr>`;
-                    const winR = Math.round((filtered.filter(l => l.pnl > 0).length / filtered.length) * 100);
-                    const netP = filtered.reduce((s, l) => s + l.pnl, 0);
-                    return `<tr><td>${val}</td><td style="color:var(--accent)">${winR}%</td><td style="color:${netP>=0?'var(--win)':'var(--loss)'}">${netP}$</td></tr>`;
+            const getStats = (key, items) => {
+                return items.map(v => {
+                    const filtered = accLogs.filter(l => l[key] === v);
+                    const winR = filtered.length > 0 ? Math.round((filtered.filter(l => l.pnl > 0).length/filtered.length)*100) : 0;
+                    return `<tr><td>${v}</td><td style="color:var(--accent)">${winR}%</td></tr>`;
                 }).join('');
             };
-            document.getElementById('day-ana').innerHTML = `<tr><th>Day</th><th>Win%</th><th>Net</th></tr>` + getAna('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
-            document.getElementById('strat-ana').innerHTML = `<tr><th>Style</th><th>Win%</th><th>Net</th></tr>` + getAna('session', ['London', 'New York']) + getAna('type', ['Scalping', 'Day Trade']);
-
-            // LOGS TAB: Performance Stats
-            if(accLogs.length > 0) {
-                const getBest = (key) => {
-                    const counts = {};
-                    accLogs.filter(l => l.pnl > 0).forEach(l => { counts[l[key]] = (counts[l[key]] || 0) + 1; });
-                    return Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, "-");
-                };
-                document.getElementById('log-best-pair').innerText = getBest('pair');
-                document.getElementById('log-best-sess').innerText = getBest('session');
-            }
+            document.getElementById('day-ana').innerHTML = getStats('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+            document.getElementById('sess-ana').innerHTML = getStats('session', ['London', 'New York', 'Asia']);
+            document.getElementById('pair-ana').innerHTML = getStats('pair', ['XAUUSD', 'EURUSD', 'GBPUSD', 'BTCUSD']);
 
             document.getElementById('full-history').innerHTML = accLogs.map(l => `
                 <div class="log-row">
-                    <div><span style="font-weight:bold; font-size:0.75rem;">${l.day} | ${l.pair} | ${l.session}</span><br><span class="basis-tag">${l.basis}</span></div>
-                    <div style="text-align:right;"><div style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}; font-weight:bold; font-size:0.85rem;">${l.pnl >=0 ? '+' : ''}${l.pnl}$</div><div style="font-size:0.55rem; color:#64748b;">${l.type}</div></div>
+                    <div style="font-size:0.75rem;"><b>${l.day} | ${l.pair} | ${l.session}</b><br><small style="color:var(--accent)">${l.basis || 'Setup'}</small></div>
+                    <div style="text-align:right; color:${l.pnl>=0?'var(--win)':'var(--loss)'}; font-weight:800;">${l.pnl>=0?'+':''}${l.pnl}$</div>
                 </div>`).join('');
         }
-        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="log-row"><span>${a.name}</span><button onclick="editAcc(${i})" style="background:var(--accent); border:none; padding:4px 8px; border-radius:4px; font-size:0.6rem; cursor:pointer;">EDIT</button></div>`).join('');
+        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="log-row"><span>${a.name}</span><button onclick="editAcc(${i})" style="background:var(--accent); border:none; padding:4px; border-radius:4px; font-size:0.6rem;">EDIT</button></div>`).join('');
     }
 
     function runCalc() {
@@ -218,7 +201,6 @@
             const lot = (bal * (risk/100)) / (sl * 10);
             document.getElementById('lot-res').innerText = lot.toFixed(2);
             navigator.clipboard.writeText(lot.toFixed(2));
-            alert("Lot Copied!");
         }
     }
     function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
@@ -226,12 +208,11 @@
     function handleAcc() {
         const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value), idx = parseInt(document.getElementById('edit-idx').value);
         if(!n) return;
-        const obj = {name: n, start: st, current: cur, target: trg};
-        if(idx === -1) { db.accs.push(obj); if(db.active === -1) db.active = 0; }
-        else { db.accs[idx] = obj; document.getElementById('edit-idx').value = "-1"; }
-        save(); updateUI(); showSec('dash');
+        if(idx === -1) { db.accs.push({name:n, start:st, current:cur, target:trg}); if(db.active===-1) db.active=0; }
+        else db.accs[idx] = {name:n, start:st, current:cur, target:trg};
+        save(); location.reload();
     }
-    function editAcc(i) { const a = db.accs[i]; document.getElementById('a-name').value = a.name; document.getElementById('a-st').value = a.start; document.getElementById('a-cur').value = a.current; document.getElementById('a-trg').value = a.target; document.getElementById('edit-idx').value = i; showSec('accounts'); }
+    function editAcc(i) { const a = db.accs[i]; document.getElementById('a-name').value=a.name; document.getElementById('a-st').value=a.start; document.getElementById('a-cur').value=a.current; document.getElementById('a-trg').value=a.target; document.getElementById('edit-idx').value=i; showSec('accounts'); }
     updateUI();
 </script>
 </body>
