@@ -2,117 +2,186 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD GHOST | TERMINAL OS</title>
+    <title>KUAD ELITE | ALL-IN-ONE TERMINAL</title>
     <style>
-        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; }
+        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
         /* Sidebar */
-        .sidebar { width: 220px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 12px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; color: #64748b; font-size: 0.8rem; font-weight: bold; }
+        .sidebar { width: 240px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
+        .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.85rem; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
-
-        /* Main Area */
-        .main { flex: 1; padding: 30px; display: flex; flex-direction: column; position: relative; }
-        .section { display: none; max-width: 600px; width: 100%; margin: 0 auto; }
-        .section.active { display: block; }
-
-        /* Calculation Card */
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 25px; border-radius: 15px; text-align: center; }
-        .lot-box { font-size: 4rem; font-weight: 900; color: #fff; margin: 10px 0; letter-spacing: -2px; }
         
-        /* Copy Button */
-        .copy-btn { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; transition: 0.3s; margin-bottom: 20px; display: inline-block; }
+        /* Main Content */
+        .main { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(circle at top right, #0f172a, #050811); }
+        .section { display: none; max-width: 850px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Professional Header & Cards */
+        .acc-display { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--accent); }
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 25px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { font-size: 0.9rem; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 12px; }
+
+        /* Copy & Lot Box */
+        .lot-container { text-align: center; padding: 20px; background: #030712; border-radius: 12px; margin: 15px 0; border: 1px dashed #334155; position: relative; }
+        .lot-val { font-size: 3.5rem; font-weight: 900; color: #fff; margin-bottom: 10px; }
+        .copy-btn { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; transition: 0.2s; }
         .copy-btn:hover { background: var(--accent); color: #000; }
 
-        /* Live Terminal Box */
-        .terminal { background: #000; border: 1px solid #334155; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: #00ff88; height: 150px; overflow-y: auto; margin-top: auto; }
-        .term-line::before { content: ">> "; color: var(--accent); }
+        /* Elements */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
+        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; margin-top: 10px; }
+        
+        /* Psychology Tags */
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { background: #1f2937; border: 1px solid #374151; color: #94a3b8; padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; }
+        .tag.selected { background: var(--accent); color: #000; font-weight: bold; }
 
-        input { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; }
-        button.execute { width: 100%; background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        /* Terminal */
+        .terminal { background: #000; border: 1px solid #334155; padding: 12px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: #00ff88; height: 110px; overflow-y: auto; margin-top: auto; }
+        .t-line::before { content: ">> "; color: var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2 style="color:var(--accent); text-align:center; font-size:1rem;">KUAD GHOST</h2>
-        <div class="nav-item active" onclick="showSec('calc')">CALCULATOR</div>
-        <div class="nav-item" onclick="showSec('acc')">ACCOUNTS</div>
-        <div class="nav-item" onclick="showSec('log')">LOG TRADE</div>
+        <h2 style="border:none; text-align:center; padding:0; margin-bottom:30px;">KUAD ELITE</h2>
+        <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
+        <div class="nav-item" onclick="showSec('accounts')">ACCOUNTS</div>
+        <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
+        <div class="nav-item" onclick="showSec('history')">HISTORY</div>
     </div>
 
     <div class="main">
-        <div id="calc" class="section active">
+        <div class="acc-display">
+            <div>
+                <select id="acc-select" onchange="switchAcc()" style="margin:0; background:transparent; border:none; font-weight:bold; font-size:1.1rem; cursor:pointer; width:auto;"></select>
+            </div>
+            <div id="top-bal" style="font-size:1.4rem; font-weight:900;">$0.00</div>
+        </div>
+
+        <div id="dash" class="section active">
             <div class="card">
-                <h3 style="font-size:0.7rem; color:var(--accent); letter-spacing:2px;">LOT SIZE CALCULATOR</h3>
-                <div id="lot-display" class="lot-box">0.00</div>
-                <div class="copy-btn" onclick="copyToClipboard()">CLICK TO COPY LOT</div>
-                
-                <input type="number" id="sl-input" placeholder="Stop Loss Pips">
-                <input type="number" id="risk-input" value="1" placeholder="Risk %">
-                <button class="execute" onclick="calculate()">RUN EXECUTION</button>
+                <h2>Execution Engine</h2>
+                <div class="grid">
+                    <div><label style="font-size:0.7rem; color:#64748b;">STOP LOSS (PIPS)</label><input type="number" id="sl" placeholder="15"></div>
+                    <div><label style="font-size:0.7rem; color:#64748b;">RISK %</label><input type="number" id="risk" value="1"></div>
+                </div>
+                <div class="lot-container">
+                    <div class="lot-val" id="lot-res">0.00</div>
+                    <div class="copy-btn" onclick="copyLot()">COPY LOT SIZE</div>
+                </div>
+                <button class="primary" onclick="calc()">CALCULATE POSITION</button>
             </div>
         </div>
 
-        <div id="acc" class="section">
+        <div id="accounts" class="section">
             <div class="card">
-                <h3 style="font-size:0.7rem; color:var(--accent);">MANAGE ACCOUNT</h3>
-                <input type="text" id="acc-name" placeholder="Account Name (e.g. 100K Funded)">
-                <input type="number" id="acc-bal" placeholder="Current Balance ($)">
-                <button class="execute" onclick="updateAccount()">UPDATE ACCOUNT</button>
+                <h2>New Account Setup</h2>
+                <input type="text" id="a-name" placeholder="Account Name (e.g. 50K Prop)">
+                <input type="number" id="a-bal" placeholder="Current Balance">
+                <button class="primary" onclick="newAcc()">CREATE ACCOUNT</button>
             </div>
         </div>
 
-        <div class="terminal" id="terminal">
-            <div class="term-line">System Booting...</div>
-            <div class="term-line">Connection Secure. Ready for Trading.</div>
+        <div id="journal" class="section">
+            <div class="card">
+                <h2>Log Trade</h2>
+                <div class="grid">
+                    <select id="p-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
+                    <select id="p-out"><option value="WIN">WIN (TP)</option><option value="LOSS">LOSS (SL)</option><option value="BE">BREAK-EVEN</option></select>
+                </div>
+                <input type="number" id="p-pnl" placeholder="Profit/Loss Amount ($)">
+                <div class="tags">
+                    <div class="tag" onclick="this.classList.toggle('selected')">Rules Followed</div>
+                    <div class="tag" onclick="this.classList.toggle('selected')">FOMO</div>
+                    <div class="tag" onclick="this.classList.toggle('selected')">Early Exit</div>
+                </div>
+                <button class="primary" onclick="logTrade()">SAVE & UPDATE</button>
+            </div>
+        </div>
+
+        <div id="history" class="section">
+            <div id="hist-list"></div>
+        </div>
+
+        <div class="terminal" id="term">
+            <div class="t-line">Elite Terminal v9.0 Online... Ready to trade.</div>
         </div>
     </div>
 
-    <script>
-        let currentBalance = localStorage.getItem('kb_bal') || 100000;
-        let accName = localStorage.getItem('kb_name') || "Default Acc";
+<script>
+    let data = JSON.parse(localStorage.getItem('kuad_v9')) || { accs: [], active: -1, logs: [] };
 
-        function logTerm(msg) {
-            const term = document.getElementById('terminal');
-            term.innerHTML += `<div class="term-line">${msg}</div>`;
-            term.scrollTop = term.scrollHeight;
-        }
+    function term(msg) {
+        const t = document.getElementById('term');
+        t.innerHTML += `<div class="t-line">${msg}</div>`;
+        t.scrollTop = t.scrollHeight;
+    }
 
-        function showSec(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            logTerm(`Mapsd to ${id.toUpperCase()}`);
-        }
+    function showSec(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
 
-        function calculate() {
-            let sl = document.getElementById('sl-input').value;
-            let risk = document.getElementById('risk-input').value;
-            if(!sl) return logTerm("Error: SL Pips required!");
-            
-            let lotSize = (currentBalance * (risk/100)) / (sl * 10);
-            document.getElementById('lot-display').innerText = lotSize.toFixed(2);
-            logTerm(`Calculation Success: ${lotSize.toFixed(2)} Lots based on $${currentBalance}`);
+    function newAcc() {
+        const n = document.getElementById('a-name').value, b = parseFloat(document.getElementById('a-bal').value);
+        if(n && b) {
+            data.accs.push({name: n, bal: b});
+            if(data.active === -1) data.active = 0;
+            save(); location.reload();
         }
+    }
 
-        function copyToClipboard() {
-            let lot = document.getElementById('lot-display').innerText;
-            navigator.clipboard.writeText(lot).then(() => {
-                logTerm(`Copied ${lot} to clipboard!`);
-                alert("Lot Copied: " + lot);
-            });
-        }
+    function switchAcc() {
+        data.active = document.getElementById('acc-select').selectedIndex;
+        save(); update();
+        term(`Switched Account: ${data.accs[data.active].name}`);
+    }
 
-        function updateAccount() {
-            let n = document.getElementById('acc-name').value;
-            let b = document.getElementById('acc-bal').value;
-            if(n) { accName = n; localStorage.setItem('kb_name', n); }
-            if(b) { currentBalance = b; localStorage.setItem('kb_bal', b); }
-            logTerm(`Account Updated: ${accName} | Balance: $${currentBalance}`);
+    function calc() {
+        const acc = data.accs[data.active];
+        const s = document.getElementById('sl').value, r = document.getElementById('risk').value;
+        if(acc && s) {
+            const lot = (acc.bal * (r/100)) / (s * 10);
+            document.getElementById('lot-res').innerText = lot.toFixed(2);
+            term(`Calculated: ${lot.toFixed(2)} Lots`);
         }
-    </script>
+    }
+
+    function copyLot() {
+        const lot = document.getElementById('lot-res').innerText;
+        navigator.clipboard.writeText(lot);
+        term(`Copied ${lot} to clipboard!`);
+        alert("Copied!");
+    }
+
+    function logTrade() {
+        const val = parseFloat(document.getElementById('p-pnl').value);
+        if(data.active !== -1 && !isNaN(val)) {
+            data.accs[data.active].bal += val;
+            data.logs.unshift({acc: data.accs[data.active].name, pair: document.getElementById('p-pair').value, pnl: val, date: new Date().toLocaleDateString()});
+            save(); update();
+            term(`Trade Saved: ${val > 0 ? '+' : ''}${val}$`);
+        }
+    }
+
+    function update() {
+        const sel = document.getElementById('acc-select');
+        sel.innerHTML = data.accs.map(a => `<option>${a.name}</option>`).join('');
+        sel.selectedIndex = data.active;
+        if(data.active !== -1) {
+            document.getElementById('top-bal').innerText = `$${data.accs[data.active].bal.toLocaleString()}`;
+        }
+        document.getElementById('hist-list').innerHTML = data.logs.map(l => `<div style="background:#0f172a; padding:12px; border-radius:8px; margin-bottom:8px; border-left:4px solid #334155;"><b>${l.pair}</b>: ${l.pnl}$ (${l.date})</div>`).join('');
+    }
+
+    function save() { localStorage.setItem('kuad_v9', JSON.stringify(data)); }
+    update();
+</script>
 </body>
 </html>
