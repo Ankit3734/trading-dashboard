@@ -2,180 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | MULTI-ACCOUNT OS</title>
+    <title>KUAD GHOST | TERMINAL OS</title>
     <style>
-        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
+        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 260px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 12px 15px; cursor: pointer; border-radius: 10px; margin-bottom: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.85rem; }
+        /* Sidebar */
+        .sidebar { width: 220px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
+        .nav-item { padding: 12px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; color: #64748b; font-size: 0.8rem; font-weight: bold; }
         .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
-        
-        .main { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; max-width: 900px; margin: 0 auto; animation: slideUp 0.4s ease; }
+
+        /* Main Area */
+        .main { flex: 1; padding: 30px; display: flex; flex-direction: column; position: relative; }
+        .section { display: none; max-width: 600px; width: 100%; margin: 0 auto; }
         .section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); margin-bottom: 20px; }
-        h2 { font-size: 1rem; color: var(--accent); text-transform: uppercase; margin-bottom: 25px; border-left: 4px solid var(--accent); padding-left: 15px; }
+        /* Calculation Card */
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 25px; border-radius: 15px; text-align: center; }
+        .lot-box { font-size: 4rem; font-weight: 900; color: #fff; margin: 10px 0; letter-spacing: -2px; }
         
-        .acc-display { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 15px 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid var(--accent); }
-        .balance-text { font-size: 1.8rem; font-weight: 800; color: #fff; }
+        /* Copy Button */
+        .copy-btn { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; transition: 0.3s; margin-bottom: 20px; display: inline-block; }
+        .copy-btn:hover { background: var(--accent); color: #000; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; }
-        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        
-        .history-card { background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #334155; font-size: 0.85rem; }
+        /* Live Terminal Box */
+        .terminal { background: #000; border: 1px solid #334155; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.75rem; color: #00ff88; height: 150px; overflow-y: auto; margin-top: auto; }
+        .term-line::before { content: ">> "; color: var(--accent); }
+
+        input { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; }
+        button.execute { width: 100%; background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2 style="border:none; text-align:center; padding:0; margin-bottom:40px;">KUAD ELITE</h2>
-        <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
-        <div class="nav-item" onclick="showSec('manage-acc')">MANAGE ACCOUNTS</div>
-        <div class="nav-item" onclick="showSec('journal')">LOG TRADE</div>
-        <div class="nav-item" onclick="showSec('history')">HISTORY</div>
+        <h2 style="color:var(--accent); text-align:center; font-size:1rem;">KUAD GHOST</h2>
+        <div class="nav-item active" onclick="showSec('calc')">CALCULATOR</div>
+        <div class="nav-item" onclick="showSec('acc')">ACCOUNTS</div>
+        <div class="nav-item" onclick="showSec('log')">LOG TRADE</div>
     </div>
 
     <div class="main">
-        <div class="acc-display">
-            <div>
-                <label style="font-size:0.7rem; color:var(--accent)">ACTIVE ACCOUNT</label>
-                <select id="acc-switcher" onchange="switchAccount()" style="margin:0; background:transparent; border:none; font-weight:bold; font-size:1.2rem; cursor:pointer;"></select>
-            </div>
-            <div style="text-align:right">
-                <label style="font-size:0.7rem; color:var(--accent)">CURRENT BALANCE</label>
-                <div id="active-bal" class="balance-text">$0.00</div>
-            </div>
-        </div>
-
-        <div id="dash" class="section active">
-            <div class="grid">
-                <div class="card">
-                    <h2>Target Progress</h2>
-                    <div id="target-info" style="font-size: 1.2rem; font-weight: bold;">Set an account to see target</div>
-                    <div id="target-diff" style="color: var(--accent); margin-top:10px;">$0.00 to goal</div>
-                </div>
-                <div class="card">
-                    <h2>Lot Calc</h2>
-                    <input type="number" id="sl-pips" placeholder="Stop Loss (Pips)">
-                    <input type="number" id="risk-per" placeholder="Risk %" value="1">
-                    <div id="lot-output" style="font-size: 2rem; font-weight: 900; color: var(--accent); margin-top:10px;">0.00</div>
-                    <button class="primary" onclick="quickCalc()">Calculate</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="manage-acc" class="section">
+        <div id="calc" class="section active">
             <div class="card">
-                <h2>Add New Account</h2>
-                <input type="text" id="new-acc-name" placeholder="e.g. 100K Funded">
-                <input type="number" id="new-acc-bal" placeholder="Starting Balance ($)">
-                <input type="number" id="new-acc-target" placeholder="Target Profit ($)">
-                <button class="primary" onclick="addAccount()">Create Account</button>
+                <h3 style="font-size:0.7rem; color:var(--accent); letter-spacing:2px;">LOT SIZE CALCULATOR</h3>
+                <div id="lot-display" class="lot-box">0.00</div>
+                <div class="copy-btn" onclick="copyToClipboard()">CLICK TO COPY LOT</div>
+                
+                <input type="number" id="sl-input" placeholder="Stop Loss Pips">
+                <input type="number" id="risk-input" value="1" placeholder="Risk %">
+                <button class="execute" onclick="calculate()">RUN EXECUTION</button>
             </div>
         </div>
 
-        <div id="journal" class="section">
+        <div id="acc" class="section">
             <div class="card">
-                <h2>New Trade Entry</h2>
-                <div class="grid">
-                    <select id="p-pair">
-                        <option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option>
-                    </select>
-                    <select id="p-out">
-                        <option value="WIN">WIN</option><option value="LOSS">LOSS</option><option value="BE">BREAK-EVEN</option>
-                    </select>
-                </div>
-                <input type="number" id="p-profit" placeholder="Profit/Loss Amount ($) e.g. 500 or -200">
-                <button class="primary" onclick="saveTrade()">Log & Update Balance</button>
+                <h3 style="font-size:0.7rem; color:var(--accent);">MANAGE ACCOUNT</h3>
+                <input type="text" id="acc-name" placeholder="Account Name (e.g. 100K Funded)">
+                <input type="number" id="acc-bal" placeholder="Current Balance ($)">
+                <button class="execute" onclick="updateAccount()">UPDATE ACCOUNT</button>
             </div>
         </div>
 
-        <div id="history" class="section">
-            <div id="trade-history-list"></div>
+        <div class="terminal" id="terminal">
+            <div class="term-line">System Booting...</div>
+            <div class="term-line">Connection Secure. Ready for Trading.</div>
         </div>
     </div>
 
-<script>
-    let state = JSON.parse(localStorage.getItem('kuad_v7_state')) || { accounts: [], activeIdx: -1, trades: [] };
+    <script>
+        let currentBalance = localStorage.getItem('kb_bal') || 100000;
+        let accName = localStorage.getItem('kb_name') || "Default Acc";
 
-    function showSec(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
-
-    function addAccount() {
-        const name = document.getElementById('new-acc-name').value;
-        const bal = parseFloat(document.getElementById('new-acc-bal').value);
-        const target = parseFloat(document.getElementById('new-acc-target').value);
-        if(!name || !bal) return alert("Details bharo bhai!");
-
-        state.accounts.push({ name, balance: bal, startBal: bal, target: target });
-        if(state.activeIdx === -1) state.activeIdx = 0;
-        saveState();
-        location.reload();
-    }
-
-    function switchAccount() {
-        state.activeIdx = document.getElementById('acc-switcher').selectedIndex;
-        saveState();
-        updateUI();
-    }
-
-    function saveTrade() {
-        const amt = parseFloat(document.getElementById('p-profit').value);
-        const acc = state.accounts[state.activeIdx];
-        if(!acc || isNaN(amt)) return alert("Data check karo!");
-
-        acc.balance += amt;
-        state.trades.unshift({
-            accName: acc.name,
-            pair: document.getElementById('p-pair').value,
-            outcome: document.getElementById('p-out').value,
-            amount: amt,
-            date: new Date().toLocaleDateString()
-        });
-
-        saveState();
-        updateUI();
-        alert("Account Updated!");
-    }
-
-    function quickCalc() {
-        const acc = state.accounts[state.activeIdx];
-        const sl = document.getElementById('sl-pips').value;
-        const risk = document.getElementById('risk-per').value;
-        if(acc && sl) {
-            const lot = (acc.balance * (risk/100)) / (sl * 10);
-            document.getElementById('lot-output').innerText = lot.toFixed(2);
-        }
-    }
-
-    function updateUI() {
-        const switcher = document.getElementById('acc-switcher');
-        switcher.innerHTML = state.accounts.map(a => `<option>${a.name}</option>`).join('');
-        switcher.selectedIndex = state.activeIdx;
-
-        if(state.activeIdx !== -1) {
-            const acc = state.accounts[state.activeIdx];
-            document.getElementById('active-bal').innerText = `$${acc.balance.toLocaleString()}`;
-            const diff = (acc.startBal + acc.target) - acc.balance;
-            document.getElementById('target-info').innerText = `Goal: $${(acc.startBal + acc.target).toLocaleString()}`;
-            document.getElementById('target-diff').innerText = diff > 0 ? `$${diff.toLocaleString()} to go` : "Target Hit! 🚀";
+        function logTerm(msg) {
+            const term = document.getElementById('terminal');
+            term.innerHTML += `<div class="term-line">${msg}</div>`;
+            term.scrollTop = term.scrollHeight;
         }
 
-        document.getElementById('trade-history-list').innerHTML = state.trades
-            .filter(t => t.accName === state.accounts[state.activeIdx]?.name)
-            .map(t => `<div class="history-card"><b>${t.pair}</b>: ${t.amount > 0 ? '+' : ''}$${t.amount} (${t.date})</div>`).join('');
-    }
+        function showSec(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            logTerm(`Mapsd to ${id.toUpperCase()}`);
+        }
 
-    function saveState() { localStorage.setItem('kuad_v7_state', JSON.stringify(state)); }
-    updateUI();
-</script>
+        function calculate() {
+            let sl = document.getElementById('sl-input').value;
+            let risk = document.getElementById('risk-input').value;
+            if(!sl) return logTerm("Error: SL Pips required!");
+            
+            let lotSize = (currentBalance * (risk/100)) / (sl * 10);
+            document.getElementById('lot-display').innerText = lotSize.toFixed(2);
+            logTerm(`Calculation Success: ${lotSize.toFixed(2)} Lots based on $${currentBalance}`);
+        }
+
+        function copyToClipboard() {
+            let lot = document.getElementById('lot-display').innerText;
+            navigator.clipboard.writeText(lot).then(() => {
+                logTerm(`Copied ${lot} to clipboard!`);
+                alert("Lot Copied: " + lot);
+            });
+        }
+
+        function updateAccount() {
+            let n = document.getElementById('acc-name').value;
+            let b = document.getElementById('acc-bal').value;
+            if(n) { accName = n; localStorage.setItem('kb_name', n); }
+            if(b) { currentBalance = b; localStorage.setItem('kb_bal', b); }
+            logTerm(`Account Updated: ${accName} | Balance: $${currentBalance}`);
+        }
+    </script>
 </body>
 </html>
