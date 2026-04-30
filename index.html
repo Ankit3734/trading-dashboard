@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | PRECISION PRO</title>
+    <title>KUAD ELITE | MASTER PRO</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
@@ -13,19 +13,19 @@
         .section { display: none; max-width: 900px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
         .section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 12px; letter-spacing: 1px; }
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        h2 { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 12px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
         .stat-box { background: #030712; padding: 12px; border-radius: 10px; border: 1px solid #1f2937; text-align: center; }
         .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .stat-val { font-size: 0.95rem; font-weight: 800; color: #fff; }
-        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; box-sizing: border-box; }
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 12px; border-radius: 8px; outline: none; margin-bottom: 10px; }
         button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .lot-big { font-size: 4rem; font-weight: 900; color: #fff; text-align: center; margin: 10px 0; }
-        .acc-row { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #1e293b; }
-        .action-btns span { margin-left: 15px; cursor: pointer; font-size: 0.7rem; font-weight: bold; padding: 4px 8px; border-radius: 4px; }
-        .edit-btn { color: var(--accent); background: rgba(0, 210, 255, 0.1); }
-        .del-btn { color: var(--loss); background: rgba(239, 68, 68, 0.1); }
+        .lot-display { font-size: 4rem; font-weight: 900; text-align: center; margin: 20px 0; color: var(--accent); }
+        .history-list { margin-top: 20px; }
+        .log-item { background: #0d1117; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .acc-row { display: flex; justify-content: space-between; background: #0d1117; padding: 10px; border-radius: 8px; margin-bottom: 5px; border: 1px solid #1e293b; }
+        .badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -42,8 +42,8 @@
         <div id="dash" class="section active">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h2>Active Monitor</h2>
-                    <select id="acc-select" onchange="switchAcc()" style="width:auto; margin:0; background:transparent; border:none; color:var(--accent); font-weight:bold;"></select>
+                    <h2>Account Overview</h2>
+                    <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold;"></select>
                 </div>
                 <div class="grid-4">
                     <div class="stat-box"><span class="stat-label">Start</span><div id="d-st" class="stat-val">$0</div></div>
@@ -56,125 +56,111 @@
 
         <div id="calc" class="section">
             <div class="card">
-                <h2>Precision Lot Calculator</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                    <div><label class="stat-label">Balance ($)</label><input type="number" id="c-bal" placeholder="Use manual or auto"></div>
-                    <div><label class="stat-label">Risk %</label><input type="number" id="c-risk" value="1"></div>
+                <h2>Precision Calculator</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <input type="number" id="c-bal" placeholder="Manual Balance ($)">
+                    <input type="number" id="c-risk" value="1" placeholder="Risk %">
                 </div>
-                <div style="display:grid; grid-template-columns: 1fr; gap:15px;">
-                    <div><label class="stat-label">Stop Loss (Pips)</label><input type="number" id="c-sl" placeholder="e.g. 20"></div>
-                </div>
-                <div class="lot-big" id="lot-res">0.00</div>
-                <div id="risk-cash" style="text-align:center; color:var(--loss); font-size:0.8rem; margin-bottom:15px;">Risk Amount: $0.00</div>
+                <input type="number" id="c-sl" placeholder="Stop Loss (Pips)">
+                <div class="lot-display" id="lot-res">0.00</div>
                 <button class="primary" onclick="runCalc()">Calculate & Copy</button>
             </div>
         </div>
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Individual Trade Log</h2>
+                <h2>Add Trade</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
                     <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
                 </div>
-                <input type="number" id="j-pnl" placeholder="P/L Amount ($) e.g. 500 or -200">
-                <button class="primary" onclick="logTrade('journal')">Save Trade</button>
+                <input type="number" id="j-pnl" placeholder="Profit/Loss ($)">
+                <button class="primary" onclick="logTrade('journal')">Log Trade</button>
             </div>
-            <div id="j-list"></div>
+            <div class="history-list" id="journal-history"></div>
         </div>
 
         <div id="daily" class="section">
             <div class="card">
-                <h2>Daily Net Result</h2>
-                <input type="number" id="d-pnl" placeholder="Total Day P/L ($)">
-                <button class="primary" onclick="logTrade('daily')">Close Day</button>
+                <h2>Daily Tracker</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <select id="d-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                    <input type="number" id="d-pnl" placeholder="Day Profit/Loss ($)">
+                </div>
+                <button class="primary" onclick="logTrade('daily')">Save Day Result</button>
             </div>
-            <div id="d-list"></div>
+            <div class="history-list" id="daily-history"></div>
         </div>
 
         <div id="accounts" class="section">
             <div class="card">
-                <h2 id="acc-form-title">Account Configuration</h2>
-                <input type="hidden" id="edit-index" value="-1">
-                <input type="text" id="a-name" placeholder="Account Name">
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                    <input type="number" id="a-st" placeholder="Start Bal">
-                    <input type="number" id="a-cur" placeholder="Current Bal">
-                    <input type="number" id="a-trg" placeholder="Target Bal">
+                <h2 id="form-title">Manage Accounts</h2>
+                <input type="hidden" id="edit-idx" value="-1">
+                <input type="text" id="a-name" placeholder="Name">
+                <div class="grid-4" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <input type="number" id="a-st" placeholder="Start">
+                    <input type="number" id="a-cur" placeholder="Current">
+                    <input type="number" id="a-trg" placeholder="Target">
                 </div>
-                <button class="primary" id="acc-btn" onclick="handleAcc()">Save Account</button>
+                <button class="primary" id="save-btn" onclick="handleAcc()">Save Account</button>
             </div>
-            <div id="acc-list-manage"></div>
+            <div id="acc-list"></div>
         </div>
     </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('kuad_v14')) || { accs: [], active: -1, logs: [], daily: [] };
+    let db = JSON.parse(localStorage.getItem('kuad_v15')) || { accs: [], active: -1, logs: [], daily: [] };
 
     function showSec(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         event.currentTarget.classList.add('active');
-        if(id === 'calc' && db.active !== -1) document.getElementById('c-bal').value = db.accs[db.active].current;
+        updateUI();
     }
 
     function handleAcc() {
         const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), 
               cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value),
-              idx = parseInt(document.getElementById('edit-index').value);
-
-        if(!n || isNaN(st)) return alert("Fields fill karein!");
-
-        if(idx === -1) {
-            db.accs.push({name: n, start: st, current: cur, target: trg});
-            if(db.active === -1) db.active = 0;
-        } else {
-            db.accs[idx] = {name: n, start: st, current: cur, target: trg};
-            document.getElementById('edit-index').value = "-1";
-            document.getElementById('acc-form-title').innerText = "Account Configuration";
-            document.getElementById('acc-btn').innerText = "Save Account";
-        }
+              idx = parseInt(document.getElementById('edit-idx').value);
+        if(!n) return;
+        const obj = {name: n, start: st, current: cur, target: trg};
+        if(idx === -1) { db.accs.push(obj); if(db.active === -1) db.active = 0; }
+        else { db.accs[idx] = obj; document.getElementById('edit-idx').value = "-1"; }
         save(); location.reload();
     }
 
     function editAcc(i) {
         const a = db.accs[i];
-        document.getElementById('edit-index').value = i;
-        document.getElementById('a-name').value = a.name;
-        document.getElementById('a-st').value = a.start;
-        document.getElementById('a-cur').value = a.current;
-        document.getElementById('a-trg').value = a.target;
-        document.getElementById('acc-form-title').innerText = "Editing: " + a.name;
-        document.getElementById('acc-btn').innerText = "Update Account";
-        window.scrollTo(0,0);
+        document.getElementById('a-name').value = a.name; document.getElementById('a-st').value = a.start;
+        document.getElementById('a-cur').value = a.current; document.getElementById('a-trg').value = a.target;
+        document.getElementById('edit-idx').value = i; document.getElementById('form-title').innerText = "Edit " + a.name;
     }
 
     function runCalc() {
-        const bal = parseFloat(document.getElementById('c-bal').value), sl = parseFloat(document.getElementById('c-sl').value), risk = parseFloat(document.getElementById('c-risk').value);
+        const bal = parseFloat(document.getElementById('c-bal').value) || (db.active !== -1 ? db.accs[db.active].current : 0);
+        const sl = parseFloat(document.getElementById('c-sl').value), risk = parseFloat(document.getElementById('c-risk').value);
         if(bal && sl) {
-            const riskAmt = bal * (risk/100);
-            const lot = riskAmt / (sl * 10);
+            const lot = (bal * (risk/100)) / (sl * 10);
             document.getElementById('lot-res').innerText = lot.toFixed(2);
-            document.getElementById('risk-cash').innerText = `Risk Amount: $${riskAmt.toFixed(2)}`;
             navigator.clipboard.writeText(lot.toFixed(2));
-            alert("Lot Copied: " + lot.toFixed(2));
+            alert("Lot Copied!");
         }
     }
 
     function logTrade(type) {
-        if(db.active === -1) return alert("Select account!");
+        if(db.active === -1) return;
         const pnl = parseFloat(document.getElementById(type === 'journal' ? 'j-pnl' : 'd-pnl').value);
         if(isNaN(pnl)) return;
         db.accs[db.active].current += pnl;
         const entry = { acc: db.accs[db.active].name, pnl, date: new Date().toLocaleDateString() };
         if(type === 'journal') { entry.pair = document.getElementById('j-pair').value; entry.session = document.getElementById('j-session').value; db.logs.unshift(entry); }
-        else { db.daily.unshift(entry); }
-        save(); updateUI(); alert("Saved!");
+        else { entry.day = document.getElementById('d-day').value; db.daily.unshift(entry); }
+        save(); updateUI();
     }
 
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
-    function save() { localStorage.setItem('kuad_v14', JSON.stringify(db)); }
+    function save() { localStorage.setItem('kuad_v15', JSON.stringify(db)); }
 
     function updateUI() {
         const sel = document.getElementById('acc-select');
@@ -182,22 +168,24 @@
         sel.selectedIndex = db.active;
         if(db.active !== -1) {
             const a = db.accs[db.active];
-            document.getElementById('d-st').innerText = `$${a.start.toLocaleString()}`;
-            document.getElementById('d-cur').innerText = `$${a.current.toLocaleString()}`;
-            document.getElementById('d-trg').innerText = `$${a.target.toLocaleString()}`;
-            document.getElementById('d-rem').innerText = `$${(a.target - a.current).toLocaleString()}`;
+            document.getElementById('d-st').innerText = `$${a.start}`;
+            document.getElementById('d-cur').innerText = `$${a.current}`;
+            document.getElementById('d-trg').innerText = `$${a.target}`;
+            const diff = a.target - a.current;
+            document.getElementById('d-rem').innerText = diff <= 0 ? "ACHIEVED 🚀" : `$${diff}`;
+            document.getElementById('d-rem').style.color = diff <= 0 ? "var(--win)" : "var(--win)";
         }
-        document.getElementById('acc-list-manage').innerHTML = db.accs.map((a, i) => `
-            <div class="acc-row">
-                <span><b>${a.name}</b> ($${a.current})</span>
-                <div class="action-btns">
-                    <span class="edit-btn" onclick="editAcc(${i})">EDIT</span>
-                    <span class="del-btn" onclick="delAcc(${i})">DELETE</span>
-                </div>
-            </div>`).join('');
+        // Daily History
+        document.getElementById('daily-history').innerHTML = db.daily.filter(l => l.acc === db.accs[db.active]?.name).map(l => `
+            <div class="log-item"><span><b>${l.day}</b> (${l.date})</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
+        // Journal History
+        document.getElementById('journal-history').innerHTML = db.logs.filter(l => l.acc === db.accs[db.active]?.name).map(l => `
+            <div class="log-item"><span><b>${l.pair}</b> | ${l.session}</span><span style="color:${l.pnl >=0 ? 'var(--win)' : 'var(--loss)'}">${l.pnl >=0 ? '+' : ''}${l.pnl}$</span></div>`).join('');
+        // Accounts List
+        document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `<div class="acc-row"><span>${a.name}</span><div><button onclick="editAcc(${i})" class="badge" style="background:var(--accent); color:#000; border:none; cursor:pointer; margin-right:5px;">EDIT</button><button onclick="delAcc(${i})" class="badge" style="background:var(--loss); color:#fff; border:none; cursor:pointer;">DEL</button></div></div>`).join('');
     }
 
-    function delAcc(i) { if(confirm("Delete?")) { db.accs.splice(i,1); db.active = db.accs.length > 0 ? 0 : -1; save(); location.reload(); } }
+    function delAcc(i) { if(confirm("Delete?")) { db.accs.splice(i,1); db.active = 0; save(); location.reload(); } }
     updateUI();
 </script>
 </body>
