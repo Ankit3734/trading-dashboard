@@ -1,211 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KUAD ELITE | COMPACT v35</title>
-    <style>
-        :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; --border: #1f2937; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+// Is function ko script tag ke andar update kar do (Accounts update logic)
+function updateUI() {
+    if(!currentUser) return;
+    let db = getUserData();
+    
+    // ... baaki dashboard logic wahi rahega ...
 
-        /* AUTH SCREEN - NO SCROLL */
-        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 15px; }
-        .auth-card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 20px; width: 100%; max-width: 340px; box-shadow: 0 15px 40px rgba(0,0,0,0.8); }
-        .auth-tabs { display: flex; margin-bottom: 15px; background: #030712; border-radius: 10px; padding: 4px; }
-        .auth-tab { flex: 1; padding: 8px; border-radius: 6px; cursor: pointer; text-align: center; font-size: 0.75rem; font-weight: 700; color: #64748b; }
-        .auth-tab.active { background: #1e293b; color: var(--accent); }
-
-        /* MAIN APP LAYOUT */
-        #app-content { display: none; height: 100vh; width: 100%; overflow: hidden; flex-direction: column; }
-        
-        .sidebar { width: 100%; background: #0a0f1a; border-bottom: 1px solid var(--border); padding: 8px; display: flex; overflow-x: auto; flex-shrink: 0; gap: 6px; }
-        .nav-item { padding: 8px 14px; cursor: pointer; border-radius: 8px; color: #64748b; font-weight: 700; font-size: 0.7rem; white-space: nowrap; border: 1px solid transparent; }
-        .nav-item.active { background: #1e293b; color: var(--accent); border-color: var(--accent); }
-
-        .main { flex: 1; padding: 12px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; width: 100%; max-width: 800px; margin: 0 auto; }
-        .section.active { display: block; }
-
-        .card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 12px; }
-        h2 { font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; border-left: 3px solid var(--accent); padding-left: 8px; }
-
-        input, select { width: 100%; background: #030712; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; margin-bottom: 8px; font-size: 0.85rem; }
-        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 0.8rem; }
-
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .stat-box { background: #030712; padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
-        .stat-label { font-size: 0.5rem; color: #64748b; display: block; margin-bottom: 2px; }
-        .stat-val { font-size: 0.9rem; font-weight: 800; }
-
-        .data-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-        .data-table td { padding: 10px 5px; border-bottom: 1px solid #0f172a; }
-
-        @media (min-width: 768px) {
-            #app-content { flex-direction: row; }
-            .sidebar { width: 180px; height: 100vh; flex-direction: column; border-bottom: none; border-right: 1px solid var(--border); overflow-y: auto; }
-            .nav-item { width: 100%; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="auth-screen">
-        <div class="auth-card">
-            <h1 style="text-align:center; font-size:1.2rem; margin-bottom:15px;">KUAD <span style="color:var(--accent)">ELITE</span></h1>
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-login" onclick="toggleAuth('login')">LOGIN</div>
-                <div class="auth-tab" id="tab-signup" onclick="toggleAuth('signup')">SIGNUP</div>
+    // ACCOUNTS LIST FIX (Buttons restored)
+    document.getElementById('acc-list').innerHTML = db.accs.map((a, i) => `
+        <div class="log-item" style="display:flex; justify-content:space-between; align-items:center; background:#0d1117; padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid var(--border);">
+            <div style="display:flex; flex-direction:column;">
+                <span style="font-weight:bold; font-size:0.85rem;">${a.name}</span>
+                <small style="color:#64748b; font-size:0.6rem;">Target: $${a.target}</small>
             </div>
-            <input type="text" id="auth-user" placeholder="Username">
-            <input type="password" id="auth-pass" placeholder="Password">
-            <button class="primary" onclick="processAuth()" id="auth-btn">Login</button>
-            <p id="auth-msg" style="color:var(--loss); font-size: 0.65rem; margin-top: 10px; text-align: center; display: none;"></p>
-        </div>
-    </div>
-
-    <div id="app-content">
-        <div class="sidebar">
-            <div style="padding: 10px; color: white; font-weight: 900; text-align: center; font-size: 0.8rem;">V35 TERMINAL</div>
-            <div class="nav-item active" onclick="showSec('dash')">MONITOR</div>
-            <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
-            <div class="nav-item" onclick="showSec('logs')">LOGS</div>
-            <div class="nav-item" onclick="showSec('calc')">CALC</div>
-            <div class="nav-item" onclick="showSec('accounts')">ACCS</div>
-            <button onclick="logout()" style="background:transparent; border:none; color:var(--loss); font-size:0.7rem; font-weight:bold; cursor:pointer; margin-top:auto; padding:15px;">LOGOUT</button>
-        </div>
-
-        <div class="main">
-            <div id="dash" class="section active">
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <h2>Status</h2>
-                        <select id="acc-select" onchange="switchAcc()" style="width:auto; padding:4px 8px; margin:0; font-size:0.65rem;"></select>
-                    </div>
-                    <div class="grid-stats">
-                        <div class="stat-box"><span class="stat-label">Bal</span><div id="d-cur" class="stat-val">$0</div></div>
-                        <div class="stat-box"><span class="stat-label">Win%</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
-                        <div class="stat-box"><span class="stat-label">Target</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
-                        <div class="stat-box"><span class="stat-label">Prog</span><div id="p-text" class="stat-val">0%</div></div>
-                    </div>
-                    <div style="background:#030712; height:6px; border-radius:3px; overflow:hidden;"><div id="p-bar" style="height:100%; background:linear-gradient(90deg, #3b82f6, #00d2ff); width:0%;"></div></div>
-                </div>
-                <div class="card"><h2>Weekly</h2><table class="data-table"><tbody id="day-stats-body"></tbody></table></div>
-                <div class="card"><h2>Strategy</h2><div style="overflow-x:auto;"><table class="data-table"><tbody id="combo-stats-body"></tbody></table></div></div>
+            <div style="display:flex; gap:8px;">
+                <button onclick="editAcc(${i})" style="background:var(--accent); color:#000; border:none; padding:6px 10px; border-radius:6px; font-size:0.6rem; font-weight:bold; cursor:pointer;">EDIT</button>
+                <button onclick="delAcc(${i})" style="background:var(--loss); color:#fff; border:none; padding:6px 10px; border-radius:6px; font-size:0.6rem; font-weight:bold; cursor:pointer;">DEL</button>
             </div>
-
-            <div id="journal" class="section">
-                <div class="card">
-                    <h2>Log Trade</h2>
-                    <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
-                    <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
-                    <select id="j-basis"><option>Session Entry</option><option>IDM Sweep</option><option>Order Block</option><option>Breakout</option></select>
-                    <select id="j-res" style="color:var(--win);"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
-                    <input type="number" id="j-pnl" placeholder="Amount ($)" inputmode="decimal">
-                    <button class="primary" onclick="logTrade()">Commit</button>
-                </div>
-            </div>
-
-            <div id="logs" class="section"><div class="card"><h2>History</h2><div id="full-history"></div></div></div>
-            <div id="calc" class="section"><div class="card"><h2>Calc</h2><input type="number" id="c-bal" placeholder="Bal"><input type="number" id="c-risk" placeholder="Risk%"><input type="number" id="c-sl" placeholder="SL Pips"><div id="lot-res" style="text-align:center; font-size:1.5rem; color:var(--accent); padding:10px;">0.00</div><button class="primary" onclick="runCalc()">Calculate</button></div></div>
-            <div id="accounts" class="section"><div class="card"><h2>Accs</h2><input type="text" id="a-name" placeholder="Name"><input type="number" id="a-st" placeholder="Start"><input type="number" id="a-cur" placeholder="Current"><input type="number" id="a-trg" placeholder="Target"><button class="primary" onclick="handleAcc()">Create</button></div></div>
         </div>
-    </div>
+    `).join('');
+}
 
-<script>
-    let mode = 'login';
-    let currentUser = null;
-    const USERS_KEY = 'KUAD_PLATFORM_USERS';
+// Ye naye functions add kar dena
+function editAcc(i) {
+    let db = getUserData();
+    const a = db.accs[i];
+    document.getElementById('a-name').value = a.name;
+    document.getElementById('a-st').value = a.start;
+    document.getElementById('a-cur').value = a.current;
+    document.getElementById('a-trg').value = a.target;
+    // Naya edit ID track karne ke liye hidden field
+    window.editingIdx = i; 
+    document.querySelector('#accounts h2').innerText = "Edit: " + a.name;
+}
 
-    function toggleAuth(m) {
-        mode = m;
-        document.getElementById('tab-login').classList.toggle('active', m==='login');
-        document.getElementById('tab-signup').classList.toggle('active', m==='signup');
-        document.getElementById('auth-btn').innerText = m === 'login' ? 'Login' : 'Create Account';
-    }
-
-    function processAuth() {
-        const u = document.getElementById('auth-user').value.toLowerCase().trim();
-        const p = document.getElementById('auth-pass').value.trim();
-        const msg = document.getElementById('auth-msg');
-        let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
-        if(!u || !p) return;
-        if(mode === 'signup') {
-            if(users[u]) { msg.innerText = "User exists!"; msg.style.display='block'; return; }
-            users[u] = { pass: p, data: { accs: [], active: -1, logs: [] } };
-            localStorage.setItem(USERS_KEY, JSON.stringify(users));
-            alert("Account Created!"); toggleAuth('login');
-        } else {
-            if(users[u] && users[u].pass === p) {
-                currentUser = u; sessionStorage.setItem('current_trader', u); initApp();
-            } else { msg.innerText = "Error!"; msg.style.display='block'; }
-        }
-    }
-
-    function initApp() {
-        const savedUser = sessionStorage.getItem('current_trader');
-        if(savedUser) {
-            currentUser = savedUser;
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('app-content').style.display = 'flex';
-            updateUI();
-        }
-    }
-
-    function logout() { sessionStorage.removeItem('current_trader'); location.reload(); }
-    function getUserData() { return (JSON.parse(localStorage.getItem(USERS_KEY)))[currentUser].data; }
-    function saveUserData(data) { let users = JSON.parse(localStorage.getItem(USERS_KEY)); users[currentUser].data = data; localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-
-    function showSec(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+function delAcc(i) {
+    if(confirm("Delete this account and all its data?")) {
+        let db = getUserData();
+        db.accs.splice(i, 1);
+        if(db.active >= i) db.active = Math.max(-1, db.active - 1);
+        saveUserData(db);
         updateUI();
     }
-
-    function logTrade() {
-        let db = getUserData(); if(db.active === -1) return;
-        let pnl = parseFloat(document.getElementById('j-pnl').value); if(isNaN(pnl)) return;
-        pnl = (document.getElementById('j-res').value === 'loss') ? -Math.abs(pnl) : Math.abs(pnl);
-        db.accs[db.active].current += pnl;
-        db.logs.unshift({ acc: db.accs[db.active].name, pnl, basis: document.getElementById('j-basis').value, pair: document.getElementById('j-pair').value, session: document.getElementById('j-session').value, day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() });
-        saveUserData(db); updateUI(); document.getElementById('j-pnl').value = '';
-    }
-
-    function updateUI() {
-        if(!currentUser) return;
-        let db = getUserData();
-        const sel = document.getElementById('acc-select');
-        sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
-        sel.selectedIndex = db.active;
-        if(db.active !== -1) {
-            const a = db.accs[db.active]; const accLogs = db.logs.filter(l => l.acc === a.name);
-            document.getElementById('d-cur').innerText = `$${a.current.toFixed(0)}`;
-            const rem = a.target - a.current; document.getElementById('d-rem').innerText = rem <= 0 ? "DONE" : `$${rem.toFixed(0)}`;
-            const wins = accLogs.filter(l => l.pnl > 0).length; document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins/accLogs.length)*100)+'%' : '0%';
-            let prog = Math.max(0, Math.min(100, ((a.current - a.start)/(a.target - a.start))*100)); document.getElementById('p-bar').style.width = prog+'%'; document.getElementById('p-text').innerText = Math.round(prog)+'%';
-
-            document.getElementById('day-stats-body').innerHTML = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => {
-                const logs = accLogs.filter(l => l.day === d);
-                return `<tr><td>${d}</td><td style="color:var(--accent)">${logs.length > 0 ? Math.round((logs.filter(l => l.pnl > 0).length/logs.length)*100) : 0}%</td><td style="color:${(logs.reduce((s, l) => s + l.pnl, 0))>=0?'var(--win)':'var(--loss)'}">${(logs.reduce((s, l) => s + l.pnl, 0)).toFixed(0)}$</td></tr>`;
-            }).join('');
-
-            const combos = {}; accLogs.forEach(l => { const k = `${l.session} + ${l.pair}`; if(!combos[k]) combos[k] = {t:0, w:0, pnl:0}; combos[k].t++; if(l.pnl > 0) combos[k].w++; combos[k].pnl += l.pnl; });
-            document.getElementById('combo-stats-body').innerHTML = Object.keys(combos).map(k => `<tr><td><b>${k}</b></td><td>${Math.round((combos[k].w/combos[k].t)*100)}%</td><td>${combos[k].pnl.toFixed(0)}$</td></tr>`).join('');
-            document.getElementById('full-history').innerHTML = accLogs.map(l => `<div class="log-item" style="padding:10px; border-bottom:1px solid #1f2937;"><div style="display:flex; justify-content:space-between;"><span>${l.pair}</span><b>${l.pnl}$</b></div><small>${l.day} - ${l.basis}</small></div>`).join('');
-        }
-    }
-
-    function runCalc() { 
-        const b = parseFloat(document.getElementById('c-bal').value); const s = parseFloat(document.getElementById('c-sl').value), r = parseFloat(document.getElementById('c-risk').value);
-        if(b && s && r) { document.getElementById('lot-res').innerText = ((b * (r/100)) / (s * 10)).toFixed(2); }
-    }
-    function switchAcc() { let db = getUserData(); db.active = document.getElementById('acc-select').selectedIndex; saveUserData(db); updateUI(); }
-    function handleAcc() { let db = getUserData(); const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value); if(!n) return; db.accs.push({name:n, start:st, current:cur, target:trg}); if(db.active === -1) db.active = 0; saveUserData(db); location.reload(); }
-    window.onload = initApp;
-</script>
-</body>
-</html>
+}
