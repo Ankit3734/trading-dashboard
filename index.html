@@ -2,74 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KUAD ELITE | MASTER MATRIX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KUAD ELITE | MOBILE PRO</title>
     <style>
         :root { --accent: #00d2ff; --bg: #050811; --card: #111827; --text: #e2e8f0; --win: #10b981; --loss: #ef4444; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 220px; background: #0a0f1a; border-right: 1px solid #1e293b; padding: 20px; display: flex; flex-direction: column; }
-        .nav-item { padding: 10px 15px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.8rem; }
-        .nav-item:hover, .nav-item.active { background: #1e293b; color: var(--accent); }
-        .main { flex: 1; padding: 20px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #050811); }
-        .section { display: none; max-width: 1100px; width: 100%; margin: 0 auto; animation: slideUp 0.3s ease; }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+
+        /* Sidebar for Desktop, Top Nav for Mobile */
+        .sidebar { width: 100%; background: #0a0f1a; border-bottom: 1px solid #1e293b; padding: 10px; display: flex; overflow-x: auto; white-space: nowrap; position: sticky; top: 0; z-index: 100; }
+        
+        .nav-item { padding: 8px 15px; cursor: pointer; border-radius: 6px; margin-right: 8px; transition: 0.3s; color: #64748b; font-weight: 600; font-size: 0.75rem; border: 1px solid transparent; }
+        .nav-item.active { background: #1e293b; color: var(--accent); border-color: var(--accent); }
+
+        .main { flex: 1; padding: 15px; background: radial-gradient(circle at top right, #0f172a, #050811); }
+        .section { display: none; width: 100%; max-width: 600px; margin: 0 auto; animation: fadeIn 0.3s ease; }
         .section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: var(--card); border: 1px solid #1f2937; padding: 18px; border-radius: 12px; margin-bottom: 15px; }
-        h2 { font-size: 0.75rem; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; border-left: 3px solid var(--accent); padding-left: 10px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .stat-box { background: #030712; padding: 10px; border-radius: 8px; border: 1px solid #1f2937; text-align: center; }
-        .stat-label { font-size: 0.5rem; color: #64748b; display: block; text-transform: uppercase; }
-        .stat-val { font-size: 0.9rem; font-weight: 800; color: #fff; }
-        .progress-container { background: #030712; height: 8px; border-radius: 4px; border: 1px solid #1e293b; overflow: hidden; margin: 10px 0; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .card { background: var(--card); border: 1px solid #1f2937; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h2 { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; border-left: 3px solid var(--accent); padding-left: 10px; }
+        
+        /* Responsive Grid */
+        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-box { background: #030712; padding: 12px; border-radius: 8px; border: 1px solid #1f2937; text-align: center; }
+        .stat-label { font-size: 0.55rem; color: #64748b; display: block; text-transform: uppercase; margin-bottom: 4px; }
+        .stat-val { font-size: 1rem; font-weight: 800; color: #fff; }
+
+        .progress-container { background: #030712; height: 10px; border-radius: 5px; border: 1px solid #1e293b; overflow: hidden; margin: 12px 0; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); width: 0%; transition: 1s; }
+
         .matrix-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
-        .matrix-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #1e293b; text-transform: uppercase; }
-        .matrix-table td { padding: 10px 8px; border-bottom: 1px solid #0f172a; }
-        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 10px; border-radius: 6px; outline: none; margin-bottom: 8px; }
-        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; text-transform: uppercase; }
-        .log-row { background: #0d1117; padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #1f2937; display: flex; justify-content: space-between; }
+        .matrix-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #1e293b; }
+        .matrix-table td { padding: 12px 8px; border-bottom: 1px solid #0f172a; }
+
+        input, select { width: 100%; background: #030712; border: 1px solid #374151; color: #fff; padding: 14px; border-radius: 8px; outline: none; margin-bottom: 10px; font-size: 0.9rem; appearance: none; }
+        
+        button.primary { background: linear-gradient(135deg, #00d2ff, #3b82f6); color: #fff; border: none; padding: 15px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 0.85rem; margin-top: 5px; }
+
+        .log-row { background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #1f2937; }
+
+        /* Desktop specific adjustments */
+        @media (min-width: 768px) {
+            body { flex-direction: row; }
+            .sidebar { width: 220px; height: 100vh; flex-direction: column; border-bottom: none; border-right: 1px solid #1e293b; position: sticky; }
+            .nav-item { margin-right: 0; margin-bottom: 8px; width: 100%; }
+            .grid-stats { grid-template-columns: repeat(4, 1fr); }
+            .section { max-width: 1000px; }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2 style="border:none; text-align:center; padding:0; margin-bottom:25px; color:white; font-size:1rem;">KUAD ELITE</h2>
+        <div style="padding: 10px; color: white; font-weight: 900; text-align: center; font-size: 1rem; display: block;" class="desktop-only">KUAD ELITE</div>
         <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
-        <div class="nav-item" onclick="showSec('journal')">JOURNAL ENTRY</div>
-        <div class="nav-item" onclick="showSec('logs')">TRADE LOGS</div>
-        <div class="nav-item" onclick="showSec('calc')">LOT CALC</div>
-        <div class="nav-item" onclick="showSec('accounts')">ACCOUNTS</div>
+        <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
+        <div class="nav-item" onclick="showSec('logs')">LOGS</div>
+        <div class="nav-item" onclick="showSec('calc')">CALC</div>
+        <div class="nav-item" onclick="showSec('accounts')">ACCS</div>
     </div>
 
     <div class="main">
         <div id="dash" class="section active">
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h2>Performance monitor</h2>
-                    <select id="acc-select" onchange="switchAcc()" style="width:auto; border:none; background:transparent; color:var(--accent); font-weight:bold; cursor:pointer;"></select>
+                    <h2>Monitor</h2>
+                    <select id="acc-select" onchange="switchAcc()" style="width:auto; padding:5px 10px; margin:0; font-size:0.75rem;"></select>
                 </div>
-                <div class="grid-4">
-                    <div class="stat-box"><span class="stat-label">Balance</span><div id="d-cur" class="stat-val">$0</div></div>
+                <div class="grid-stats">
+                    <div class="stat-box"><span class="stat-label">Bal</span><div id="d-cur" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Target</span><div id="d-trg" class="stat-val">$0</div></div>
                     <div class="stat-box"><span class="stat-label">Win%</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
-                    <div class="stat-box"><span class="stat-label">To Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
+                    <div class="stat-box"><span class="stat-label">Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
                 </div>
                 <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
-                <div id="p-text" style="text-align:right; font-size:0.6rem; color:var(--accent); font-weight:bold;">0%</div>
+                <div id="p-text" style="text-align:right; font-size:0.65rem; font-weight:bold; color:var(--accent);">0%</div>
             </div>
 
             <div class="card">
-                <h2>Master Analytics Matrix (Combined)</h2>
+                <h2>Master Matrix (%)</h2>
                 <div style="overflow-x:auto;">
                     <table class="matrix-table">
-                        <thead>
-                            <tr>
-                                <th>Combination (Day | Pair | Session)</th>
-                                <th>Trades</th>
-                                <th>Win Rate %</th>
-                                <th>Net P/L</th>
-                            </tr>
-                        </thead>
-                        <tbody id="matrix-body">
-                            </tbody>
+                        <thead><tr><th>Combo</th><th>Trd</th><th>WR%</th><th>P/L</th></tr></thead>
+                        <tbody id="matrix-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -77,28 +94,20 @@
 
         <div id="journal" class="section">
             <div class="card">
-                <h2>Log Entry</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                    <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
-                    <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
-                    <select id="j-type"><option>Scalping</option><option>Day Trade</option><option>Swing</option></select>
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                    <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
-                    <select id="j-res" style="color:var(--win);"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
-                    <input type="number" id="j-pnl" placeholder="Amount ($)">
-                </div>
-                <select id="j-basis">
-                    <option value="" disabled selected>Select Basis</option>
-                    <option>Session Entry</option><option>IDM Sweep</option><option>Order Block</option><option>Breakout</option>
-                </select>
-                <button class="primary" onclick="logTrade()">Commit Entry</button>
+                <h2>New Trade Entry</h2>
+                <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
+                <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
+                <select id="j-basis"><option>Session Entry</option><option>IDM Sweep</option><option>Order Block</option><option>Breakout</option></select>
+                <select id="j-res" style="color:var(--win); font-weight:bold;"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
+                <input type="number" id="j-pnl" placeholder="Amount ($)" inputmode="decimal">
+                <button class="primary" onclick="logTrade()">Save Entry</button>
             </div>
         </div>
 
         <div id="logs" class="section">
             <div class="card">
-                <h2>Trade History</h2>
+                <h2>History</h2>
                 <div id="full-history"></div>
             </div>
         </div>
@@ -106,28 +115,25 @@
         <div id="calc" class="section">
             <div class="card">
                 <h2>Lot Calculator</h2>
-                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px;">
-                    <input type="number" id="c-bal" placeholder="Balance">
-                    <input type="number" id="c-risk" placeholder="Risk%">
+                <input type="number" id="c-bal" placeholder="Balance ($)" inputmode="decimal">
+                <input type="number" id="c-risk" placeholder="Risk %" inputmode="decimal">
+                <input type="number" id="c-sl" placeholder="SL Pips" inputmode="decimal">
+                <div style="text-align:center; padding:15px 0;">
+                    <span style="font-size:0.6rem; color:#64748b;">USE LOT SIZE</span>
+                    <div id="lot-res" style="font-size:2rem; font-weight:900; color:var(--accent);">0.00</div>
                 </div>
-                <input type="number" id="c-sl" placeholder="SL Pips">
-                <div style="text-align:center; padding:10px 0;">
-                    <div style="font-size:0.5rem; color:#64748b;">RECOMMENDED LOT</div>
-                    <div style="font-size:1.5rem; font-weight:900; color:var(--accent);" id="lot-res">0.00</div>
-                </div>
-                <button class="primary" onclick="runCalc()">Calculate & Copy</button>
+                <button class="primary" onclick="runCalc()">Calc & Copy</button>
             </div>
         </div>
 
         <div id="accounts" class="section">
             <div class="card">
-                <h2 id="form-title">Accounts</h2>
-                <input type="hidden" id="edit-idx" value="-1">
-                <input type="text" id="a-name" placeholder="Account Name">
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                    <input type="number" id="a-st" placeholder="Start"><input type="number" id="a-cur" placeholder="Current"><input type="number" id="a-trg" placeholder="Target">
-                </div>
-                <button class="primary" onclick="handleAcc()">Save</button>
+                <h2>Acc Management</h2>
+                <input type="text" id="a-name" placeholder="Acc Name">
+                <input type="number" id="a-st" placeholder="Start Bal" inputmode="decimal">
+                <input type="number" id="a-cur" placeholder="Current Bal" inputmode="decimal">
+                <input type="number" id="a-trg" placeholder="Target Bal" inputmode="decimal">
+                <button class="primary" onclick="handleAcc()">Save Account</button>
             </div>
             <div id="acc-list"></div>
         </div>
@@ -143,27 +149,34 @@
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         event.currentTarget.classList.add('active');
         updateUI();
+        window.scrollTo(0,0);
     }
 
     function logTrade() {
         if(db.active === -1) return;
         let pnl = parseFloat(document.getElementById('j-pnl').value);
-        const res = document.getElementById('j-res').value;
         if(isNaN(pnl)) return;
-        pnl = (res === 'loss') ? -Math.abs(pnl) : Math.abs(pnl);
+        pnl = (document.getElementById('j-res').value === 'loss') ? -Math.abs(pnl) : Math.abs(pnl);
+        
         db.accs[db.active].current += pnl;
         db.logs.unshift({ 
-            acc: db.accs[db.active].name, pnl, basis: document.getElementById('j-basis').value,
-            pair: document.getElementById('j-pair').value, session: document.getElementById('j-session').value, 
-            type: document.getElementById('j-type').value, day: document.getElementById('j-day').value, date: new Date().toLocaleDateString() 
+            acc: db.accs[db.active].name, pnl, 
+            basis: document.getElementById('j-basis').value,
+            pair: document.getElementById('j-pair').value, 
+            session: document.getElementById('j-session').value, 
+            day: document.getElementById('j-day').value, 
+            date: new Date().toLocaleDateString() 
         });
-        save(); updateUI(); document.getElementById('j-pnl').value = '';
+        save(); updateUI();
+        document.getElementById('j-pnl').value = '';
+        alert("Success!");
     }
 
     function updateUI() {
         const sel = document.getElementById('acc-select');
         sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
         sel.selectedIndex = db.active;
+
         if(db.active !== -1) {
             const a = db.accs[db.active];
             const accLogs = db.logs.filter(l => l.acc === a.name);
@@ -171,57 +184,53 @@
             document.getElementById('d-trg').innerText = `$${a.target}`;
             const rem = a.target - a.current;
             document.getElementById('d-rem').innerText = rem <= 0 ? "DONE" : `$${rem.toFixed(0)}`;
+            
             const wins = accLogs.filter(l => l.pnl > 0).length;
             document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins/accLogs.length)*100)+'%' : '0%';
+            
             let prog = Math.max(0, Math.min(100, ((a.current - a.start)/(a.target - a.start))*100));
             document.getElementById('p-bar').style.width = prog+'%';
             document.getElementById('p-text').innerText = Math.round(prog)+'%';
 
-            // MASTER MATRIX LOGIC
-            const matrix = {};
+            // Master Matrix
+            const m = {};
             accLogs.forEach(l => {
-                const key = `${l.day} | ${l.pair} | ${l.session}`;
-                if(!matrix[key]) matrix[key] = { t:0, w:0, pnl:0 };
-                matrix[key].t++;
-                if(l.pnl > 0) matrix[key].w++;
-                matrix[key].pnl += l.pnl;
+                const k = `${l.day.substring(0,3)}|${l.pair.replace('USD','')}|${l.session.substring(0,3)}`;
+                if(!m[k]) m[k] = {t:0, w:0, pnl:0};
+                m[k].t++; if(l.pnl > 0) m[k].w++; m[k].pnl += l.pnl;
             });
-
-            document.getElementById('matrix-body').innerHTML = Object.keys(matrix).map(k => {
-                const s = matrix[k];
-                const wr = Math.round((s.w / s.t) * 100);
-                return `<tr>
-                    <td><b>${k}</b></td>
-                    <td>${s.t}</td>
-                    <td style="color:var(--accent)">${wr}%</td>
-                    <td style="color:${s.pnl>=0?'var(--win)':'var(--loss)'}">${s.pnl>=0?'+':''}${s.pnl.toFixed(0)}$</td>
-                </tr>`;
-            }).join('') || '<tr><td colspan="4">No data logged yet.</td></tr>';
+            document.getElementById('matrix-body').innerHTML = Object.keys(m).map(k => `
+                <tr><td>${k}</td><td>${m[k].t}</td><td>${Math.round((m[k].w/m[k].t)*100)}%</td><td style="color:${m[k].pnl>=0?'var(--win)':'var(--loss)'}">${m[k].pnl.toFixed(0)}</td></tr>
+            `).join('');
 
             document.getElementById('full-history').innerHTML = accLogs.map(l => `
                 <div class="log-row">
-                    <div style="font-size:0.75rem;"><b>${l.day} | ${l.pair} | ${l.session}</b><br><small style="color:var(--accent)">${l.basis || 'Setup'}</small></div>
-                    <div style="text-align:right; color:${l.pnl>=0?'var(--win)':'var(--loss)'}; font-weight:800;">${l.pnl>=0?'+':''}${l.pnl}$</div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span><b>${l.day} | ${l.pair}</b></span>
+                        <b style="color:${l.pnl>=0?'var(--win)':'var(--loss)'}">${l.pnl>=0?'+':''}${l.pnl}$</b>
+                    </div>
+                    <div style="font-size:0.65rem; color:#64748b; margin-top:5px;">${l.session} - ${l.basis}</div>
                 </div>`).join('');
         }
     }
 
     function runCalc() {
-        const bal = parseFloat(document.getElementById('c-bal').value) || (db.active !== -1 ? db.accs[db.active].current : 0);
-        const sl = parseFloat(document.getElementById('c-sl').value), risk = parseFloat(document.getElementById('c-risk').value);
-        if(bal && sl && risk) {
-            const lot = (bal * (risk/100)) / (sl * 10);
+        const b = parseFloat(document.getElementById('c-bal').value) || (db.active!==-1?db.accs[db.active].current:0);
+        const s = parseFloat(document.getElementById('c-sl').value), r = parseFloat(document.getElementById('c-risk').value);
+        if(b && s && r) {
+            const lot = (b * (r/100)) / (s * 10);
             document.getElementById('lot-res').innerText = lot.toFixed(2);
             navigator.clipboard.writeText(lot.toFixed(2));
         }
     }
+
     function save() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
     function switchAcc() { db.active = document.getElementById('acc-select').selectedIndex; save(); updateUI(); }
     function handleAcc() {
-        const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value), idx = parseInt(document.getElementById('edit-idx').value);
+        const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), cur = parseFloat(document.getElementById('a-cur').value), trg = parseFloat(document.getElementById('a-trg').value);
         if(!n) return;
-        if(idx === -1) { db.accs.push({name:n, start:st, current:cur, target:trg}); if(db.active===-1) db.active=0; }
-        else db.accs[idx] = {name:n, start:st, current:cur, target:trg};
+        db.accs.push({name:n, start:st, current:cur, target:trg});
+        if(db.active === -1) db.active = 0;
         save(); location.reload();
     }
     updateUI();
