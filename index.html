@@ -268,4 +268,20 @@
         window.onload = initApp;
     </script>
 </body>
+</html><script>
+        // ... saara login aur data logic ...
+
+        function switchAcc() {
+            let db = getUserData();
+            const selectBox = document.getElementById('acc-select');
+            db.active = selectBox.selectedIndex;
+            saveUserData(db); 
+            updateUI(); // Ye line hona sabse zaruri hai
+        }
+
+        // ... baaki handleAcc aur functions ...
+
+        window.onload = initApp;
+    </script>
+</body>
 </html>
