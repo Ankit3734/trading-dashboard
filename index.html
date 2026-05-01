@@ -241,4 +241,64 @@
     window.onload = () => { if(sessionStorage.getItem('current_trader')) { currentUser = sessionStorage.getItem('current_trader'); document.getElementById('auth-screen').style.display = 'none'; document.getElementById('app-content').style.display = 'flex'; updateUI(); } };
 </script>
 </body>
-</html>
+</html>function updateUI() {
+    if(!currentUser) return;
+    let db = getUserData();
+    const sel = document.getElementById('acc-select');
+    sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
+    sel.selectedIndex = db.active;
+
+    if(db.active !== -1) {
+        const a = db.accs[db.active];
+        // CRITICAL FIX: Ab har cheez 'currentAccLogs' se filter hogi
+        const currentAccLogs = db.logs.filter(l => l.acc === a.name);
+        
+        // 1. Dashboard Stats
+        document.getElementById('d-cur').innerText = `$${a.current.toFixed(0)}`;
+        const rem = a.target - a.current;
+        document.getElementById('d-rem').innerText = rem <= 0 ? "PASSED" : `$${rem.toFixed(0)}`;
+        
+        const wins = currentAccLogs.filter(l => l.pnl > 0).length;
+        document.getElementById('d-wr').innerText = currentAccLogs.length > 0 ? Math.round((wins/currentAccLogs.length)*100)+'%' : '0%';
+        
+        let prog = Math.max(0, Math.min(100, ((a.current - a.start)/(a.target - a.start))*100));
+        document.getElementById('p-bar').style.width = prog+'%';
+        document.getElementById('p-text').innerText = Math.round(prog)+'%';
+
+        // 2. Day Stats (Filtered)
+        document.getElementById('day-stats-body').innerHTML = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => {
+            const logs = currentAccLogs.filter(l => l.day === d);
+            const pnl = logs.reduce((s, l) => s + l.pnl, 0);
+            const wr = logs.length > 0 ? Math.round((logs.filter(l => l.pnl > 0).length/logs.length)*100) : 0;
+            return `<tr><td>${d}</td><td style="color:var(--accent)">${wr}%</td><td style="color:${pnl>=0?'var(--win)':'var(--loss)'}">${pnl.toFixed(0)}$</td></tr>`;
+        }).join('');
+
+        // 3. Master Matrix (Filtered)
+        const combos = {};
+        currentAccLogs.forEach(l => {
+            const k = `${l.session} + ${l.pair}`;
+            if(!combos[k]) combos[k] = {t:0, w:0, pnl:0};
+            combos[k].t++; if(l.pnl > 0) combos[k].w++; combos[k].pnl += l.pnl;
+        });
+        document.getElementById('combo-stats-body').innerHTML = Object.keys(combos).map(k => `
+            <tr><td><b>${k}</b></td><td>${Math.round((combos[k].w/combos[k].t)*100)}%</td><td style="color:${combos[k].pnl>=0?'var(--win)':'var(--loss)'}">${combos[k].pnl.toFixed(0)}$</td></tr>
+        `).join('') || '<tr><td colspan="3">No trades for this account</td></tr>';
+        
+        // 4. Journal History (Filtered)
+        document.getElementById('full-history').innerHTML = currentAccLogs.map(l => `
+            <div class="card" style="display:flex; justify-content:space-between; font-size:0.75rem; border-left:4px solid ${l.pnl>=0?'var(--win)':'var(--loss)'}">
+                <span><b>${l.pair}</b> | ${l.day}</span>
+                <b style="color:${l.pnl>=0?'var(--win)':'var(--loss)'}">${l.pnl >= 0 ? '+' : ''}${l.pnl}$</b>
+            </div>`).join('');
+    }
+    
+    // 5. Account List (Admin View)
+    document.getElementById('acc-list').innerHTML = db.accs.map((a,i) => `
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div><b>${a.name}</b><br><small>$${a.current.toFixed(0)} / $${a.target}</small></div>
+            <div>
+                <button onclick="editAcc(${i})" style="background:var(--accent); color:black; padding:5px 10px; border-radius:6px; font-size:0.6rem; font-weight:bold; cursor:pointer;">EDIT</button>
+                <button onclick="delAcc(${i})" style="background:var(--loss); color:white; padding:5px 10px; border-radius:6px; font-size:0.6rem; font-weight:bold; cursor:pointer; margin-left:5px;">DEL</button>
+            </div>
+        </div>`).join('');
+}
