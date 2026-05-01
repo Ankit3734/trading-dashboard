@@ -3,129 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KUAD ELITE | PROFESSIONAL TERMINAL</title>
+    <title>KUAD ELITE | PRO TERMINAL v39</title>
     <style>
         :root { --accent: #00d2ff; --bg: #02040a; --win: #00ffaa; --loss: #ff4d4d; --border: rgba(255, 255, 255, 0.1); }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        
-        body { 
-            background: #02040a;
-            color: #e2e8f0; height: 100vh; overflow: hidden;
-        }
+        body { background: #02040a; color: #e2e8f0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* Professional Trading Background */
+        /* SaaS Background */
         #auth-screen { 
             position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
-            background: linear-gradient(rgba(2, 4, 10, 0.8), rgba(2, 4, 10, 0.9)), 
-                        url('https://images.unsplash.com/photo-1611974717482-5828ed33da4c?auto=format&fit=crop&q=80&w=2070');
+            background: linear-gradient(rgba(2, 4, 10, 0.85), rgba(2, 4, 10, 0.95)), 
+                        url('https://images.unsplash.com/photo-1611974717482-5828ed33da4c?q=80&w=2070');
             background-size: cover; background-position: center;
         }
 
         .auth-card { 
-            background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(20px); 
-            border: 1px solid var(--border); padding: 30px; border-radius: 28px; 
-            width: 100%; max-width: 380px; box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            text-align: center;
+            background: rgba(17, 24, 39, 0.5); backdrop-filter: blur(25px); 
+            border: 1px solid var(--border); padding: 35px; border-radius: 30px; 
+            width: 100%; max-width: 380px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); text-align: center;
         }
 
-        /* Professional Logo Style */
-        .brand-logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 5px; }
-        .brand-logo span { color: var(--accent); text-shadow: 0 0 15px rgba(0, 210, 255, 0.5); }
+        .brand { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; }
+        .brand span { color: var(--accent); text-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
 
-        .auth-tabs { display: flex; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 12px; margin-bottom: 25px; }
-        .auth-tab { flex: 1; padding: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 700; color: #64748b; border-radius: 8px; transition: 0.3s; }
-        .auth-tab.active { background: var(--accent); color: #000; }
+        .tabs { display: flex; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 12px; margin-bottom: 25px; }
+        .tab { flex: 1; padding: 10px; cursor: pointer; font-size: 0.75rem; font-weight: 700; color: #64748b; border-radius: 8px; }
+        .tab.active { background: var(--accent); color: #000; }
 
-        input { 
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); 
-            color: #fff; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none;
+        input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 0.9rem; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 12px rgba(0, 210, 255, 0.2); }
+
+        .btn-pro { width: 100%; background: var(--accent); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; }
+
+        /* App Layout (Hidden till Login) */
+        #app-content { display: none; height: 100vh; flex-direction: column; width: 100%; }
+        .sidebar { width: 100%; background: #0a0f1a; border-bottom: 1px solid var(--border); padding: 8px; display: flex; overflow-x: auto; gap: 8px; }
+        .nav-item { padding: 8px 15px; cursor: pointer; border-radius: 8px; color: #64748b; font-weight: 700; font-size: 0.7rem; white-space: nowrap; }
+        .nav-item.active { background: #1e293b; color: var(--accent); }
+        
+        .main { flex: 1; padding: 12px; overflow-y: auto; }
+        .card { background: rgba(17, 24, 39, 0.7); border: 1px solid var(--border); padding: 15px; border-radius: 15px; margin-bottom: 12px; }
+        
+        @media (min-width: 768px) {
+            #app-content { flex-direction: row; }
+            .sidebar { width: 200px; height: 100vh; flex-direction: column; border-right: 1px solid var(--border); }
         }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
-
-        .btn-main { 
-            width: 100%; background: var(--accent); color: #000; border: none; padding: 16px; 
-            border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase;
-        }
-
-        /* OTP Input (Initially Hidden) */
-        #otp-box { display: none; margin-top: 10px; }
-
-        #app-content { display: none; height: 100vh; flex-direction: column; }
-        /* Baaki App Logic v36.2 wala hi rahega */
     </style>
 </head>
 <body>
 
     <div id="auth-screen">
         <div class="auth-card">
-            <div class="brand-logo">KUAD <span>ELITE</span></div>
-            <p style="font-size: 0.65rem; color: #64748b; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px;">Professional Trader Terminal</p>
+            <div class="brand">KUAD <span>ELITE</span></div>
+            <p style="font-size: 0.6rem; color: #64748b; margin-bottom: 25px; letter-spacing: 2px;">SECURE TRADING ACCESS</p>
             
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-login" onclick="toggleAuth('login')">LOGIN</div>
-                <div class="auth-tab" id="tab-signup" onclick="toggleAuth('signup')">SIGNUP</div>
+            <div class="tabs">
+                <div class="tab active" id="tab-login" onclick="toggleMode('login')">SIGN IN</div>
+                <div class="tab" id="tab-signup" onclick="toggleMode('signup')">REGISTER</div>
             </div>
 
-            <div id="login-fields">
-                <input type="text" id="login-id" placeholder="Username or Email">
-                <input type="password" id="login-pass" placeholder="Password">
-                <button class="btn-main" onclick="handleLogin()">Sign In</button>
+            <div id="login-box">
+                <input type="text" id="user-id" placeholder="Username or Gmail">
+                <input type="password" id="pass-id" placeholder="Password">
+                <button class="btn-pro" onclick="doLogin()">Unlock Terminal</button>
             </div>
 
-            <div id="signup-fields" style="display: none;">
-                <input type="email" id="signup-email" placeholder="Gmail Address">
-                <input type="text" id="signup-user" placeholder="Create Username">
-                <input type="password" id="signup-pass" placeholder="Create Password">
-                
-                <div id="otp-box">
-                    <p style="font-size:0.6rem; color:var(--accent); margin-bottom:8px;">Enter OTP sent to Gmail</p>
-                    <input type="number" id="otp-input" placeholder="6-Digit OTP">
+            <div id="signup-box" style="display:none;">
+                <input type="email" id="s-email" placeholder="Gmail Address">
+                <input type="text" id="s-user" placeholder="Username">
+                <input type="password" id="s-pass" placeholder="Password">
+                <div id="otp-area" style="display:none;">
+                    <input type="number" id="otp-val" placeholder="6-Digit OTP" style="border-color:var(--accent);">
                 </div>
-                
-                <button class="btn-main" id="signup-btn" onclick="requestOTP()">Send OTP</button>
+                <button class="btn-pro" id="s-btn" onclick="sendOTP()">Request OTP</button>
             </div>
-            
-            <p id="auth-msg" style="color:var(--loss); font-size: 0.65rem; margin-top: 15px; display: none;"></p>
+            <p id="err-msg" style="color:var(--loss); font-size:0.65rem; margin-top:15px; display:none;"></p>
         </div>
     </div>
 
+    <div id="app-content">
+        <div class="sidebar">
+            <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
+            <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
+            <div class="nav-item" onclick="showSec('accounts')">ACCS</div>
+            <button onclick="logout()" style="margin-top:auto; color:var(--loss); background:none; border:none; padding:15px; cursor:pointer;">LOGOUT</button>
+        </div>
+        <div class="main">
+            <div id="dash" class="section active"><div class="card"><h2>Active Monitor</h2><div id="d-cur">$0</div></div></div>
+            </div>
+    </div>
+
     <script>
+        const USERS_KEY = 'KUAD_PLATFORM_USERS';
+        let currentUser = null;
         let mode = 'login';
 
-        function toggleAuth(m) {
+        function toggleMode(m) {
             mode = m;
             document.getElementById('tab-login').classList.toggle('active', m==='login');
             document.getElementById('tab-signup').classList.toggle('active', m==='signup');
-            document.getElementById('login-fields').style.display = m==='login' ? 'block' : 'none';
-            document.getElementById('signup-fields').style.display = m==='signup' ? 'block' : 'none';
+            document.getElementById('login-box').style.display = m==='login' ? 'block' : 'none';
+            document.getElementById('signup-box').style.display = m==='signup' ? 'block' : 'none';
         }
 
-        function requestOTP() {
-            const email = document.getElementById('signup-email').value;
-            if(!email.includes('@')) { alert("Enter valid Gmail!"); return; }
-            
-            // UI Change for OTP
-            document.getElementById('otp-box').style.display = 'block';
-            document.getElementById('signup-btn').innerText = "Verify & Signup";
-            document.getElementById('signup-btn').onclick = finalSignup;
-            
-            alert("Simulated: OTP sent to " + email);
-        }
+        function doLogin() {
+            const u = document.getElementById('user-id').value.toLowerCase().trim();
+            const p = document.getElementById('pass-id').value.trim();
+            let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
 
-        function finalSignup() {
-            const otp = document.getElementById('otp-input').value;
-            if(otp.length === 6) {
-                alert("Account Verified Successfully!");
-                toggleAuth('login');
+            if(users[u] && users[u].pass === p) {
+                currentUser = u;
+                sessionStorage.setItem('current_trader', u);
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-content').style.display = 'flex';
+                // Trigger your updateUI here
             } else {
-                alert("Invalid OTP!");
+                const err = document.getElementById('err-msg');
+                err.innerText = "Invalid Access Credentials!";
+                err.style.display = 'block';
             }
         }
 
-        function handleLogin() {
-            // Aapka purana login logic yahan aayega
-            alert("Connecting to Terminal...");
+        function sendOTP() {
+            if(!document.getElementById('s-email').value.includes('@')) return;
+            document.getElementById('otp-area').style.display = 'block';
+            const btn = document.getElementById('s-btn');
+            btn.innerText = "Verify & Register";
+            btn.onclick = function() {
+                const u = document.getElementById('s-user').value.toLowerCase().trim();
+                const p = document.getElementById('s-pass').value.trim();
+                let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+                users[u] = { pass: p, data: { accs: [], active: -1, logs: [] } };
+                localStorage.setItem(USERS_KEY, JSON.stringify(users));
+                alert("Account Verified!"); toggleMode('login');
+            };
         }
+
+        function logout() { sessionStorage.removeItem('current_trader'); location.reload(); }
+        window.onload = () => { if(sessionStorage.getItem('current_trader')) doLogin(); };
     </script>
 </body>
 </html>
