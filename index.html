@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KUAD ELITE | SaaS TERMINAL</title>
+    <title>KUAD ELITE | PROFESSIONAL TERMINAL</title>
     <style>
-        :root { --accent: #00d2ff; --bg: #02040a; --win: #00ffaa; --loss: #ff4d4d; --border: rgba(255, 255, 255, 0.1); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; transition: 0.3s; }
-        body { background: #02040a; color: #e2e8f0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        :root { --accent: #00d2ff; --bg: #02040a; --card: rgba(17, 24, 39, 0.8); --text: #e2e8f0; --win: #00ffaa; --loss: #ff4d4d; --border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; transition: 0.2s; }
+        body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
         /* SaaS Background */
         #auth-screen { 
@@ -16,34 +16,37 @@
                         url('https://images.unsplash.com/photo-1611974717482-5828ed33da4c?q=80&w=2070');
             background-size: cover; background-position: center;
         }
+        .auth-card { background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--border); padding: 30px; border-radius: 25px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
 
-        .auth-card { 
-            background: rgba(17, 24, 39, 0.5); backdrop-filter: blur(25px); 
-            border: 1px solid var(--border); padding: 30px; border-radius: 25px; 
-            width: 100%; max-width: 360px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); text-align: center;
-        }
+        /* Sidebar & App UI */
+        #app-content { display: none; height: 100vh; width: 100%; overflow: hidden; flex-direction: column; }
+        .sidebar { width: 100%; background: #0a0f1a; border-bottom: 1px solid var(--border); padding: 8px; display: flex; overflow-x: auto; gap: 8px; flex-shrink: 0; }
+        .nav-item { padding: 8px 15px; cursor: pointer; border-radius: 8px; color: #64748b; font-weight: 700; font-size: 0.7rem; white-space: nowrap; }
+        .nav-item.active { background: #1e293b; color: var(--accent); border: 1px solid var(--accent); }
+        .main { flex: 1; padding: 12px; overflow-y: auto; background: radial-gradient(circle at top right, #0f172a, #02040a); }
 
-        .brand { font-size: 1.6rem; font-weight: 900; margin-bottom: 20px; }
-        .brand span { color: var(--accent); }
+        /* Restored Premium Cards */
+        .card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 16px; margin-bottom: 12px; backdrop-filter: blur(10px); }
+        h2 { font-size: 0.65rem; color: var(--accent); text-transform: uppercase; margin-bottom: 12px; border-left: 3px solid var(--accent); padding-left: 8px; }
+        
+        .grid-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+        .stat-box { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .stat-label { font-size: 0.55rem; color: #64748b; display: block; margin-bottom: 4px; }
+        .stat-val { font-size: 1rem; font-weight: 900; }
+        
+        .progress-container { background: #030712; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #00d2ff, #3b82f6); box-shadow: 0 0 10px var(--accent); width: 0%; transition: 1s; }
 
-        .tabs { display: flex; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 10px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; cursor: pointer; font-size: 0.7rem; font-weight: 700; color: #64748b; border-radius: 7px; }
-        .tab.active { background: var(--accent); color: #000; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .data-table td { padding: 10px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        input, select { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; margin-bottom: 10px; }
-        .btn-pro { width: 100%; background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
-
-        /* App UI */
-        #app-content { display: none; height: 100vh; flex-direction: column; width: 100%; }
-        .sidebar { width: 100%; background: #0a0f1a; border-bottom: 1px solid var(--border); padding: 8px; display: flex; overflow-x: auto; gap: 8px; }
-        .nav-item { padding: 8px 15px; cursor: pointer; border-radius: 8px; color: #64748b; font-weight: 700; font-size: 0.65rem; white-space: nowrap; }
-        .nav-item.active { background: #1e293b; color: var(--accent); }
-        .main { flex: 1; padding: 12px; overflow-y: auto; }
-        .card { background: rgba(17, 24, 39, 0.7); border: 1px solid var(--border); padding: 15px; border-radius: 15px; margin-bottom: 12px; }
+        input, select { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; margin-bottom: 8px; }
+        button.primary { background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 10px; font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
 
         @media (min-width: 768px) {
             #app-content { flex-direction: row; }
-            .sidebar { width: 180px; height: 100vh; flex-direction: column; border-right: 1px solid var(--border); }
+            .sidebar { width: 180px; height: 100vh; flex-direction: column; border-bottom: none; border-right: 1px solid var(--border); }
+            .grid-stats { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
@@ -51,142 +54,187 @@
 
     <div id="auth-screen">
         <div class="auth-card">
-            <div class="brand">KUAD <span>ELITE</span></div>
-            <div class="tabs">
-                <div class="tab active" id="tab-login" onclick="toggleMode('login')">LOGIN</div>
-                <div class="tab" id="tab-signup" onclick="toggleMode('signup')">SIGNUP</div>
-            </div>
-            <div id="login-box">
-                <input type="text" id="l-user" placeholder="Username or Gmail">
-                <input type="password" id="l-pass" placeholder="Password">
-                <button class="btn-pro" onclick="doLogin()">Unlock Terminal</button>
-            </div>
-            <div id="signup-box" style="display:none;">
-                <input type="email" id="s-email" placeholder="Gmail Address">
-                <input type="text" id="s-user" placeholder="Username">
-                <input type="password" id="s-pass" placeholder="Password">
-                <div id="otp-area" style="display:none;"><input type="number" id="otp-val" placeholder="6-Digit OTP"></div>
-                <button class="btn-pro" id="s-btn" onclick="sendOTP()">Request OTP</button>
-            </div>
+            <h1 style="margin-bottom:15px; font-size:1.5rem;">KUAD <span style="color:var(--accent)">ELITE</span></h1>
+            <input type="text" id="l-user" placeholder="Username">
+            <input type="password" id="l-pass" placeholder="Password">
+            <button class="primary" onclick="doLogin()">Unlock Terminal</button>
+            <p style="font-size:0.6rem; color:#64748b; margin-top:15px;">LOGIN TO ACCESS MASTER MATRIX</p>
         </div>
     </div>
 
     <div id="app-content">
         <div class="sidebar">
+            <div style="padding: 15px; font-weight: 900; text-align: center; color: var(--accent);">V41 PRO</div>
             <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
             <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
             <div class="nav-item" onclick="showSec('accounts')">ACCOUNTS</div>
-            <button onclick="logout()" style="margin-top:auto; color:var(--loss); background:none; border:none; padding:15px; cursor:pointer; font-weight:bold;">LOGOUT</button>
+            <button onclick="logout()" style="margin-top:auto; background:none; border:none; color:var(--loss); padding:15px; font-weight:bold; cursor:pointer;">LOGOUT</button>
         </div>
+
         <div class="main">
             <div id="dash" class="section active">
                 <div class="card">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <h2 style="font-size:0.7rem;">Monitor</h2>
-                        <select id="acc-select" onchange="switchAcc()" style="width:auto; padding:2px; margin:0; font-size:0.6rem;"></select>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h2>Monitor</h2>
+                        <select id="acc-select" onchange="switchAcc()" style="width:auto; padding:2px 10px; margin:0; font-size:0.65rem;"></select>
                     </div>
-                    <div id="d-cur" style="font-size:1.5rem; font-weight:900;">$0</div>
+                    <div class="grid-stats">
+                        <div class="stat-box"><span class="stat-label">Bal</span><div id="d-cur" class="stat-val">$0</div></div>
+                        <div class="stat-box"><span class="stat-label">Win%</span><div id="d-wr" class="stat-val" style="color:var(--accent)">0%</div></div>
+                        <div class="stat-box"><span class="stat-label">Goal</span><div id="d-rem" class="stat-val" style="color:var(--win)">$0</div></div>
+                        <div class="stat-box"><span class="stat-label">Prog</span><div id="p-text" class="stat-val">0%</div></div>
+                    </div>
+                    <div class="progress-container"><div id="p-bar" class="progress-bar"></div></div>
+                </div>
+
+                <div class="card">
+                    <h2>Day Performance (%)</h2>
+                    <table class="data-table"><tbody id="day-stats-body"></tbody></table>
+                </div>
+
+                <div class="card">
+                    <h2>Master Matrix (Session + Pair)</h2>
+                    <div style="overflow-x:auto;"><table class="data-table"><tbody id="combo-stats-body"></tbody></table></div>
                 </div>
             </div>
+
             <div id="journal" class="section">
                 <div class="card">
                     <h2>New Entry</h2>
-                    <input type="number" id="j-pnl" placeholder="Profit/Loss Amount">
-                    <button class="btn-pro" onclick="logTrade()">Save Trade</button>
+                    <select id="j-day"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option></select>
+                    <select id="j-pair"><option>XAUUSD</option><option>EURUSD</option><option>GBPUSD</option><option>BTCUSD</option></select>
+                    <select id="j-session"><option>London</option><option>New York</option><option>Asia</option></select>
+                    <select id="j-res"><option value="win">PROFIT (+)</option><option value="loss">LOSS (-)</option></select>
+                    <input type="number" id="j-pnl" placeholder="Amount ($)">
+                    <button class="primary" onclick="logTrade()">Save Trade</button>
                 </div>
+                <div id="full-history"></div>
             </div>
+
             <div id="accounts" class="section">
                 <div class="card">
-                    <h2>Manage Accounts</h2>
-                    <input type="text" id="a-name" placeholder="Acc Name">
+                    <h2>Add Account</h2>
+                    <input type="text" id="a-name" placeholder="Name">
                     <input type="number" id="a-st" placeholder="Start Bal">
-                    <button class="btn-pro" onclick="handleAcc()">Create Acc</button>
+                    <input type="number" id="a-trg" placeholder="Target Bal">
+                    <button class="primary" onclick="handleAcc()">Create</button>
                 </div>
                 <div id="acc-list"></div>
             </div>
         </div>
     </div>
 
-    <script>
-        const USERS_KEY = 'KUAD_PLATFORM_USERS';
-        let currentUser = null;
-        let mode = 'login';
+<script>
+    const USERS_KEY = 'KUAD_PLATFORM_USERS';
+    let currentUser = null;
 
-        function toggleMode(m) {
-            mode = m;
-            document.getElementById('tab-login').classList.toggle('active', m==='login');
-            document.getElementById('tab-signup').classList.toggle('active', m==='signup');
-            document.getElementById('login-box').style.display = m==='login' ? 'block' : 'none';
-            document.getElementById('signup-box').style.display = m==='signup' ? 'block' : 'none';
+    function doLogin() {
+        const u = document.getElementById('l-user').value.toLowerCase().trim();
+        const p = document.getElementById('l-pass').value.trim();
+        let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
+        
+        // Auto-create for you if not exists
+        if(!users[u]) users[u] = { pass: p, data: { accs: [], active: -1, logs: [] } };
+        
+        if(users[u].pass === p) {
+            currentUser = u;
+            sessionStorage.setItem('current_trader', u);
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('app-content').style.display = 'flex';
+            updateUI();
+        } else { alert("Wrong Password!"); }
+    }
+
+    function getUserData() { return (JSON.parse(localStorage.getItem(USERS_KEY)))[currentUser].data; }
+    function saveUserData(d) { let u = JSON.parse(localStorage.getItem(USERS_KEY)); u[currentUser].data = d; localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+
+    function showSec(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    function logTrade() {
+        let db = getUserData(); if(db.active === -1) return;
+        let pnl = parseFloat(document.getElementById('j-pnl').value);
+        if(isNaN(pnl)) return;
+        pnl = (document.getElementById('j-res').value === 'loss') ? -Math.abs(pnl) : Math.abs(pnl);
+        
+        db.accs[db.active].current += pnl;
+        db.logs.unshift({ 
+            acc: db.accs[db.active].name, pnl, 
+            pair: document.getElementById('j-pair').value, 
+            session: document.getElementById('j-session').value, 
+            day: document.getElementById('j-day').value 
+        });
+        saveUserData(db); updateUI();
+        document.getElementById('j-pnl').value = '';
+    }
+
+    function updateUI() {
+        if(!currentUser) return;
+        let db = getUserData();
+        const sel = document.getElementById('acc-select');
+        sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
+        sel.selectedIndex = db.active;
+
+        if(db.active !== -1) {
+            const a = db.accs[db.active];
+            const accLogs = db.logs.filter(l => l.acc === a.name);
+            document.getElementById('d-cur').innerText = `$${a.current.toFixed(0)}`;
+            const rem = a.target - a.current;
+            document.getElementById('d-rem').innerText = rem <= 0 ? "PASSED" : `$${rem.toFixed(0)}`;
+            const wins = accLogs.filter(l => l.pnl > 0).length;
+            document.getElementById('d-wr').innerText = accLogs.length > 0 ? Math.round((wins/accLogs.length)*100)+'%' : '0%';
+            let prog = Math.max(0, Math.min(100, ((a.current - a.start)/(a.target - a.start))*100));
+            document.getElementById('p-bar').style.width = prog+'%';
+            document.getElementById('p-text').innerText = Math.round(prog)+'%';
+
+            // Day Stats
+            document.getElementById('day-stats-body').innerHTML = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => {
+                const logs = accLogs.filter(l => l.day === d);
+                const pnl = logs.reduce((s, l) => s + l.pnl, 0);
+                return `<tr><td>${d}</td><td style="color:var(--accent)">${logs.length > 0 ? Math.round((logs.filter(l => l.pnl > 0).length/logs.length)*100) : 0}%</td><td style="color:${pnl>=0?'var(--win)':'var(--loss)'}">${pnl.toFixed(0)}$</td></tr>`;
+            }).join('');
+
+            // Matrix
+            const combos = {};
+            accLogs.forEach(l => {
+                const k = `${l.session} + ${l.pair}`;
+                if(!combos[k]) combos[k] = {t:0, w:0, pnl:0};
+                combos[k].t++; if(l.pnl > 0) combos[k].w++; combos[k].pnl += l.pnl;
+            });
+            document.getElementById('combo-stats-body').innerHTML = Object.keys(combos).map(k => `<tr><td><b>${k}</b></td><td>${Math.round((combos[k].w/combos[k].t)*100)}%</td><td style="color:${combos[k].pnl>=0?'var(--win)':'var(--loss)'}">${combos[k].pnl.toFixed(0)}$</td></tr>`).join('');
+            
+            // History
+            document.getElementById('full-history').innerHTML = accLogs.map(l => `<div class="card" style="display:flex; justify-content:space-between; font-size:0.7rem;"><span>${l.pair} | ${l.day}</span><b style="color:${l.pnl>=0?'var(--win)':'var(--loss)'}">${l.pnl}$</b></div>`).join('');
         }
+        document.getElementById('acc-list').innerHTML = db.accs.map((a,i) => `<div class="card" style="display:flex; justify-content:space-between;"><span>${a.name}</span><button onclick="delAcc(${i})" style="background:var(--loss); border:none; color:white; padding:2px 8px; border-radius:4px; font-size:0.6rem;">DEL</button></div>`).join('');
+    }
 
-        function doLogin() {
-            const u = document.getElementById('l-user').value.toLowerCase().trim();
-            const p = document.getElementById('l-pass').value.trim();
-            let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
-            if(users[u] && users[u].pass === p) {
-                currentUser = u;
-                sessionStorage.setItem('current_trader', u);
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('app-content').style.display = 'flex';
-                updateUI();
-            } else { alert("Wrong Credentials!"); }
-        }
+    function handleAcc() {
+        let db = getUserData();
+        const n = document.getElementById('a-name').value, st = parseFloat(document.getElementById('a-st').value), trg = parseFloat(document.getElementById('a-trg').value);
+        if(!n || isNaN(st)) return;
+        db.accs.push({name:n, start:st, current:st, target:trg});
+        if(db.active === -1) db.active = 0;
+        saveUserData(db); updateUI();
+        document.getElementById('a-name').value = ''; document.getElementById('a-st').value = '';
+    }
 
-        function sendOTP() {
-            document.getElementById('otp-area').style.display = 'block';
-            const btn = document.getElementById('s-btn');
-            btn.innerText = "Verify & Signup";
-            btn.onclick = () => {
-                const u = document.getElementById('s-user').value.toLowerCase().trim();
-                const p = document.getElementById('s-pass').value.trim();
-                let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
-                users[u] = { pass: p, data: { accs: [], active: -1, logs: [] } };
-                localStorage.setItem(USERS_KEY, JSON.stringify(users));
-                alert("Verified!"); toggleMode('login');
-            };
-        }
-
-        function getUserData() { return (JSON.parse(localStorage.getItem(USERS_KEY)))[currentUser].data; }
-        function saveUserData(d) { let u = JSON.parse(localStorage.getItem(USERS_KEY)); u[currentUser].data = d; localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
-
-        function showSec(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        function updateUI() {
-            let db = getUserData();
-            const sel = document.getElementById('acc-select');
-            sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
-            sel.selectedIndex = db.active;
-            if(db.active !== -1) {
-                document.getElementById('d-cur').innerText = `$${db.accs[db.active].current}`;
-            }
-            document.getElementById('acc-list').innerHTML = db.accs.map((a,i) => `<div class="card">${a.name} - $${a.current}</div>`).join('');
-        }
-
-        function handleAcc() {
-            let db = getUserData();
-            const n = document.getElementById('a-name').value;
-            const s = parseFloat(document.getElementById('a-st').value);
-            if(!n) return;
-            db.accs.push({name:n, start:s, current:s, target:s*1.1});
-            if(db.active === -1) db.active = 0;
+    function delAcc(i) {
+        if(confirm("Delete Acc?")) {
+            let db = getUserData(); db.accs.splice(i, 1);
+            if(db.active >= i) db.active = Math.max(-1, db.active - 1);
             saveUserData(db); updateUI();
         }
+    }
 
-        function logTrade() {
-            let db = getUserData(); if(db.active === -1) return;
-            const p = parseFloat(document.getElementById('j-pnl').value);
-            db.accs[db.active].current += p;
-            saveUserData(db); updateUI();
-        }
-
-        function logout() { sessionStorage.removeItem('current_trader'); location.reload(); }
-        window.onload = () => { if(sessionStorage.getItem('current_trader')) doLogin(); };
-    </script>
+    function switchAcc() { let db = getUserData(); db.active = document.getElementById('acc-select').selectedIndex; saveUserData(db); updateUI(); }
+    function logout() { sessionStorage.removeItem('current_trader'); location.reload(); }
+    window.onload = () => { if(sessionStorage.getItem('current_trader')) { currentUser = sessionStorage.getItem('current_trader'); document.getElementById('auth-screen').style.display = 'none'; document.getElementById('app-content').style.display = 'flex'; updateUI(); } };
+</script>
 </body>
 </html>
