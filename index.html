@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KUAD ELITE | PRO TERMINAL v39</title>
+    <title>KUAD ELITE | SaaS TERMINAL</title>
     <style>
         :root { --accent: #00d2ff; --bg: #02040a; --win: #00ffaa; --loss: #ff4d4d; --border: rgba(255, 255, 255, 0.1); }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; transition: 0.3s; }
         body { background: #02040a; color: #e2e8f0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
         /* SaaS Background */
         #auth-screen { 
             position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
-            background: linear-gradient(rgba(2, 4, 10, 0.85), rgba(2, 4, 10, 0.95)), 
+            background: linear-gradient(rgba(2, 4, 10, 0.8), rgba(2, 4, 10, 0.9)), 
                         url('https://images.unsplash.com/photo-1611974717482-5828ed33da4c?q=80&w=2070');
             background-size: cover; background-position: center;
         }
 
         .auth-card { 
             background: rgba(17, 24, 39, 0.5); backdrop-filter: blur(25px); 
-            border: 1px solid var(--border); padding: 35px; border-radius: 30px; 
-            width: 100%; max-width: 380px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); text-align: center;
+            border: 1px solid var(--border); padding: 30px; border-radius: 25px; 
+            width: 100%; max-width: 360px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); text-align: center;
         }
 
-        .brand { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; }
-        .brand span { color: var(--accent); text-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+        .brand { font-size: 1.6rem; font-weight: 900; margin-bottom: 20px; }
+        .brand span { color: var(--accent); }
 
-        .tabs { display: flex; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 12px; margin-bottom: 25px; }
-        .tab { flex: 1; padding: 10px; cursor: pointer; font-size: 0.75rem; font-weight: 700; color: #64748b; border-radius: 8px; }
+        .tabs { display: flex; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 10px; margin-bottom: 20px; }
+        .tab { flex: 1; padding: 10px; cursor: pointer; font-size: 0.7rem; font-weight: 700; color: #64748b; border-radius: 7px; }
         .tab.active { background: var(--accent); color: #000; }
 
-        input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; margin-bottom: 12px; outline: none; font-size: 0.9rem; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 12px rgba(0, 210, 255, 0.2); }
+        input, select { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; outline: none; margin-bottom: 10px; }
+        .btn-pro { width: 100%; background: var(--accent); color: #000; border: none; padding: 14px; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
 
-        .btn-pro { width: 100%; background: var(--accent); color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; }
-
-        /* App Layout (Hidden till Login) */
+        /* App UI */
         #app-content { display: none; height: 100vh; flex-direction: column; width: 100%; }
         .sidebar { width: 100%; background: #0a0f1a; border-bottom: 1px solid var(--border); padding: 8px; display: flex; overflow-x: auto; gap: 8px; }
-        .nav-item { padding: 8px 15px; cursor: pointer; border-radius: 8px; color: #64748b; font-weight: 700; font-size: 0.7rem; white-space: nowrap; }
+        .nav-item { padding: 8px 15px; cursor: pointer; border-radius: 8px; color: #64748b; font-weight: 700; font-size: 0.65rem; white-space: nowrap; }
         .nav-item.active { background: #1e293b; color: var(--accent); }
-        
         .main { flex: 1; padding: 12px; overflow-y: auto; }
         .card { background: rgba(17, 24, 39, 0.7); border: 1px solid var(--border); padding: 15px; border-radius: 15px; margin-bottom: 12px; }
-        
+
         @media (min-width: 768px) {
             #app-content { flex-direction: row; }
-            .sidebar { width: 200px; height: 100vh; flex-direction: column; border-right: 1px solid var(--border); }
+            .sidebar { width: 180px; height: 100vh; flex-direction: column; border-right: 1px solid var(--border); }
         }
     </style>
 </head>
@@ -55,29 +52,22 @@
     <div id="auth-screen">
         <div class="auth-card">
             <div class="brand">KUAD <span>ELITE</span></div>
-            <p style="font-size: 0.6rem; color: #64748b; margin-bottom: 25px; letter-spacing: 2px;">SECURE TRADING ACCESS</p>
-            
             <div class="tabs">
-                <div class="tab active" id="tab-login" onclick="toggleMode('login')">SIGN IN</div>
-                <div class="tab" id="tab-signup" onclick="toggleMode('signup')">REGISTER</div>
+                <div class="tab active" id="tab-login" onclick="toggleMode('login')">LOGIN</div>
+                <div class="tab" id="tab-signup" onclick="toggleMode('signup')">SIGNUP</div>
             </div>
-
             <div id="login-box">
-                <input type="text" id="user-id" placeholder="Username or Gmail">
-                <input type="password" id="pass-id" placeholder="Password">
+                <input type="text" id="l-user" placeholder="Username or Gmail">
+                <input type="password" id="l-pass" placeholder="Password">
                 <button class="btn-pro" onclick="doLogin()">Unlock Terminal</button>
             </div>
-
             <div id="signup-box" style="display:none;">
                 <input type="email" id="s-email" placeholder="Gmail Address">
                 <input type="text" id="s-user" placeholder="Username">
                 <input type="password" id="s-pass" placeholder="Password">
-                <div id="otp-area" style="display:none;">
-                    <input type="number" id="otp-val" placeholder="6-Digit OTP" style="border-color:var(--accent);">
-                </div>
+                <div id="otp-area" style="display:none;"><input type="number" id="otp-val" placeholder="6-Digit OTP"></div>
                 <button class="btn-pro" id="s-btn" onclick="sendOTP()">Request OTP</button>
             </div>
-            <p id="err-msg" style="color:var(--loss); font-size:0.65rem; margin-top:15px; display:none;"></p>
         </div>
     </div>
 
@@ -85,12 +75,36 @@
         <div class="sidebar">
             <div class="nav-item active" onclick="showSec('dash')">DASHBOARD</div>
             <div class="nav-item" onclick="showSec('journal')">JOURNAL</div>
-            <div class="nav-item" onclick="showSec('accounts')">ACCS</div>
-            <button onclick="logout()" style="margin-top:auto; color:var(--loss); background:none; border:none; padding:15px; cursor:pointer;">LOGOUT</button>
+            <div class="nav-item" onclick="showSec('accounts')">ACCOUNTS</div>
+            <button onclick="logout()" style="margin-top:auto; color:var(--loss); background:none; border:none; padding:15px; cursor:pointer; font-weight:bold;">LOGOUT</button>
         </div>
         <div class="main">
-            <div id="dash" class="section active"><div class="card"><h2>Active Monitor</h2><div id="d-cur">$0</div></div></div>
+            <div id="dash" class="section active">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <h2 style="font-size:0.7rem;">Monitor</h2>
+                        <select id="acc-select" onchange="switchAcc()" style="width:auto; padding:2px; margin:0; font-size:0.6rem;"></select>
+                    </div>
+                    <div id="d-cur" style="font-size:1.5rem; font-weight:900;">$0</div>
+                </div>
             </div>
+            <div id="journal" class="section">
+                <div class="card">
+                    <h2>New Entry</h2>
+                    <input type="number" id="j-pnl" placeholder="Profit/Loss Amount">
+                    <button class="btn-pro" onclick="logTrade()">Save Trade</button>
+                </div>
+            </div>
+            <div id="accounts" class="section">
+                <div class="card">
+                    <h2>Manage Accounts</h2>
+                    <input type="text" id="a-name" placeholder="Acc Name">
+                    <input type="number" id="a-st" placeholder="Start Bal">
+                    <button class="btn-pro" onclick="handleAcc()">Create Acc</button>
+                </div>
+                <div id="acc-list"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -107,36 +121,68 @@
         }
 
         function doLogin() {
-            const u = document.getElementById('user-id').value.toLowerCase().trim();
-            const p = document.getElementById('pass-id').value.trim();
+            const u = document.getElementById('l-user').value.toLowerCase().trim();
+            const p = document.getElementById('l-pass').value.trim();
             let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
-
             if(users[u] && users[u].pass === p) {
                 currentUser = u;
                 sessionStorage.setItem('current_trader', u);
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('app-content').style.display = 'flex';
-                // Trigger your updateUI here
-            } else {
-                const err = document.getElementById('err-msg');
-                err.innerText = "Invalid Access Credentials!";
-                err.style.display = 'block';
-            }
+                updateUI();
+            } else { alert("Wrong Credentials!"); }
         }
 
         function sendOTP() {
-            if(!document.getElementById('s-email').value.includes('@')) return;
             document.getElementById('otp-area').style.display = 'block';
             const btn = document.getElementById('s-btn');
-            btn.innerText = "Verify & Register";
-            btn.onclick = function() {
+            btn.innerText = "Verify & Signup";
+            btn.onclick = () => {
                 const u = document.getElementById('s-user').value.toLowerCase().trim();
                 const p = document.getElementById('s-pass').value.trim();
                 let users = JSON.parse(localStorage.getItem(USERS_KEY)) || {};
                 users[u] = { pass: p, data: { accs: [], active: -1, logs: [] } };
                 localStorage.setItem(USERS_KEY, JSON.stringify(users));
-                alert("Account Verified!"); toggleMode('login');
+                alert("Verified!"); toggleMode('login');
             };
+        }
+
+        function getUserData() { return (JSON.parse(localStorage.getItem(USERS_KEY)))[currentUser].data; }
+        function saveUserData(d) { let u = JSON.parse(localStorage.getItem(USERS_KEY)); u[currentUser].data = d; localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+
+        function showSec(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function updateUI() {
+            let db = getUserData();
+            const sel = document.getElementById('acc-select');
+            sel.innerHTML = db.accs.map(a => `<option>${a.name}</option>`).join('');
+            sel.selectedIndex = db.active;
+            if(db.active !== -1) {
+                document.getElementById('d-cur').innerText = `$${db.accs[db.active].current}`;
+            }
+            document.getElementById('acc-list').innerHTML = db.accs.map((a,i) => `<div class="card">${a.name} - $${a.current}</div>`).join('');
+        }
+
+        function handleAcc() {
+            let db = getUserData();
+            const n = document.getElementById('a-name').value;
+            const s = parseFloat(document.getElementById('a-st').value);
+            if(!n) return;
+            db.accs.push({name:n, start:s, current:s, target:s*1.1});
+            if(db.active === -1) db.active = 0;
+            saveUserData(db); updateUI();
+        }
+
+        function logTrade() {
+            let db = getUserData(); if(db.active === -1) return;
+            const p = parseFloat(document.getElementById('j-pnl').value);
+            db.accs[db.active].current += p;
+            saveUserData(db); updateUI();
         }
 
         function logout() { sessionStorage.removeItem('current_trader'); location.reload(); }
